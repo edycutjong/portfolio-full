@@ -97,11 +97,11 @@ export const projects: Project[] = [
 
 // Mock profile data
 export const profile: Profile = {
-    name: 'Developer Name',
+    name: 'Edy Cu',
     title: 'Full-Stack Engineer | AI/ML | Cloud Architecture',
     bio: 'Passionate full-stack developer specializing in high-performance systems, AI integration, and cloud-native applications. Building products that solve real problems.',
     location: 'Remote',
-    email: 'hello@devfolio.dev',
+    email: 'hello@edycu.dev',
     links: {
         github: 'https://github.com/developer',
         linkedin: 'https://linkedin.com/in/developer',
