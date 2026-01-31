@@ -1,56 +1,65 @@
 import { Hono } from 'hono'
-import { projects } from '../data'
+import { supabase, type Project } from '../lib/supabase'
 
 export const projectsRouter = new Hono()
 
 // GET /api/projects - List all projects
-projectsRouter.get('/', (c) => {
+projectsRouter.get('/', async (c) => {
     const category = c.req.query('category')
     const featured = c.req.query('featured')
-    const status = c.req.query('status')
 
-    let filtered = [...projects]
+    let query = supabase.from('projects').select('*')
 
     if (category) {
-        filtered = filtered.filter((p) => p.category === category)
+        query = query.eq('category', category)
     }
 
     if (featured === 'true') {
-        filtered = filtered.filter((p) => p.featured)
+        query = query.eq('featured', true)
     }
 
-    if (status) {
-        filtered = filtered.filter((p) => p.status === status)
-    }
+    const { data, error } = await query.order('created_at', { ascending: false })
 
-    // Sort by order
-    filtered.sort((a, b) => a.order - b.order)
+    if (error) {
+        return c.json({ success: false, error: error.message }, 500)
+    }
 
     return c.json({
         success: true,
-        data: filtered,
-        total: filtered.length,
+        data: data as Project[],
+        total: data?.length || 0,
     })
 })
 
 // GET /api/projects/:slug - Get project by slug
-projectsRouter.get('/:slug', (c) => {
+projectsRouter.get('/:slug', async (c) => {
     const slug = c.req.param('slug')
-    const project = projects.find((p) => p.slug === slug)
 
-    if (!project) {
+    const { data, error } = await supabase
+        .from('projects')
+        .select('*')
+        .eq('slug', slug)
+        .single()
+
+    if (error || !data) {
         return c.json({ success: false, error: 'Project not found' }, 404)
     }
 
     return c.json({
         success: true,
-        data: project,
+        data: data as Project,
     })
 })
 
-// GET /api/projects/categories - Get all categories with counts
-projectsRouter.get('/meta/categories', (c) => {
-    const categories = projects.reduce(
+// GET /api/projects/meta/categories - Get all categories with counts
+projectsRouter.get('/meta/categories', async (c) => {
+    const { data, error } = await supabase.from('projects').select('category')
+
+    if (error) {
+        return c.json({ success: false, error: error.message }, 500)
+    }
+
+    const categories = (data || []).reduce(
         (acc, p) => {
             acc[p.category] = (acc[p.category] || 0) + 1
             return acc
@@ -64,9 +73,15 @@ projectsRouter.get('/meta/categories', (c) => {
     })
 })
 
-// GET /api/projects/tech-stack - Get all unique tech stack items
-projectsRouter.get('/meta/tech-stack', (c) => {
-    const techStack = [...new Set(projects.flatMap((p) => p.techStack))].sort()
+// GET /api/projects/meta/tech-stack - Get all unique tech stack items
+projectsRouter.get('/meta/tech-stack', async (c) => {
+    const { data, error } = await supabase.from('projects').select('technologies')
+
+    if (error) {
+        return c.json({ success: false, error: error.message }, 500)
+    }
+
+    const techStack = [...new Set((data || []).flatMap((p) => p.technologies))].sort()
 
     return c.json({
         success: true,
