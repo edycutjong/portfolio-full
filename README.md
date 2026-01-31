@@ -1,0 +1,54 @@
+# PortfolioFull — Multi-Stack Portfolio Workspace
+
+A monorepo containing 6 full-stack projects targeting high-paying remote positions ($120K-$300K+).
+
+## 🚀 Projects
+
+| Project | Description | Tech Stack | Status |
+|---------|-------------|------------|--------|
+| [DevFolio AI](./apps/devfolio-web) | AI-powered portfolio with chatbot | Next.js, Hono, OpenAI | 🔨 In Progress |
+| [DocuMind AI](./apps/documind-web) | Intelligent document Q&A | FastAPI, LangChain, Pinecone | 📋 Planned |
+| [LinkSnap](./apps/linksnap) | High-performance URL shortener | Go, Redis, Prometheus | 📋 Planned |
+| [SolMint](./apps/solmint-web) | No-code NFT minting platform | Rust, Anchor, Solana | 📋 Planned |
+| [SpendWise](./apps/spendwise) | Offline-first expense tracker | React Native, SQLite | 📋 Planned |
+| [InfraHub](./infra) | Reusable DevOps templates | Terraform, K8s, GitHub Actions | 📋 Planned |
+
+## 📁 Structure
+
+```
+├── apps/                    # Deployable applications
+│   ├── devfolio-web/        # Portfolio frontend (Next.js)
+│   ├── devfolio-api/        # Portfolio API (Hono + Bun)
+│   ├── documind-web/        # AI SaaS frontend
+│   ├── documind-api/        # AI SaaS backend (FastAPI)
+│   ├── linksnap/            # URL shortener (Go)
+│   ├── solmint-web/         # NFT DApp frontend
+│   ├── solmint-contracts/   # Solana programs (Rust)
+│   └── spendwise/           # Mobile app (React Native)
+├── packages/                # Shared code
+│   ├── ui/                  # Shared React components
+│   ├── config/              # ESLint, Prettier, TypeScript configs
+│   └── utils/               # Shared utilities
+├── infra/                   # DevOps & Infrastructure
+│   ├── terraform/           # IaC templates
+│   ├── kubernetes/          # K8s manifests
+│   └── docker/              # Shared Dockerfiles
+└── docs/                    # Documentation
+```
+
+## 🛠️ Setup
+
+```bash
+# Install Bun (if not installed)
+curl -fsSL https://bun.sh/install | bash
+
+# Install dependencies
+bun install
+
+# Start development (specific project)
+cd apps/devfolio-web && bun dev
+```
+
+## 📄 License
+
+MIT

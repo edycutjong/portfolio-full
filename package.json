@@ -1,0 +1,19 @@
+{
+    "name": "portfolio-full",
+    "private": true,
+    "workspaces": [
+        "apps/*",
+        "packages/*"
+    ],
+    "scripts": {
+        "dev": "bun run --filter '*' dev",
+        "build": "bun run --filter '*' build",
+        "test": "bun run --filter '*' test",
+        "lint": "bun run --filter '*' lint",
+        "format": "prettier --write ."
+    },
+    "devDependencies": {
+        "prettier": "^3.2.0",
+        "typescript": "^5.3.0"
+    }
+}
