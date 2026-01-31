@@ -1,7 +1,7 @@
 # Build stage
 FROM rust:1.84-bookworm as builder
 
-# Install minimal dependencies
+# Install dependencies
 RUN apt-get update && apt-get install -y \
     pkg-config \
     libssl-dev \
@@ -20,15 +20,19 @@ RUN rm -rf src
 # Copy actual source code
 COPY src ./src
 
-# Touch to update timestamp and rebuild
+# Touch to update timestamp and force rebuild
 RUN touch src/main.rs
 
 # Build for release
 RUN cargo build --release
 
-# Runtime stage
+# Verify binary exists
+RUN ls -la target/release/datapulse
+
+# Runtime stage - use slim with glibc
 FROM debian:bookworm-slim
 
+# Install runtime dependencies
 RUN apt-get update && apt-get install -y \
     ca-certificates \
     libssl3 \
@@ -36,10 +40,17 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
+# Copy binary
 COPY --from=builder /app/target/release/datapulse /app/datapulse
 
+# Make executable
+RUN chmod +x /app/datapulse
+
+# Set PORT env (Railway overrides this)
 ENV PORT=8080
+ENV RUST_LOG=info
 
 EXPOSE 8080
 
-CMD ["./datapulse"]
+# Run the binary
+CMD ["/app/datapulse"]
