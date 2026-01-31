@@ -2,7 +2,19 @@
 
 A monorepo containing 6 full-stack projects targeting high-paying remote positions ($120K-$300K+).
 
+## 🌐 Live Deployments
+
+| Project | Tech Stack | Live URL |
+|---------|------------|----------|
+| DevFolio Web | Next.js 15, TypeScript | [edycu.dev](https://edycu.dev) |
+| DevFolio API | Bun, Hono | [Vercel](https://devfolio-api.vercel.app) |
+| DocuMind API | Python, FastAPI | [documind-api.edycu.dev](https://documind-api.edycu.dev) |
+| FlowState API | Go, WebSocket | [flowstate-api.edycu.dev](https://flowstate-api.edycu.dev) |
+| DataPulse Analytics | Rust, Axum | [datapulse-api.edycu.dev](https://datapulse-api.edycu.dev) |
+| SolStake Protocol | Rust, Anchor | ❌ Blocked (LLVM) |
+
 ## 🚀 Projects
+
 
 | Project | Description | Tech Stack | Status |
 |---------|-------------|------------|--------|
