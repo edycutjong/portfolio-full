@@ -103,9 +103,9 @@ export const profile: Profile = {
     location: 'Remote',
     email: 'hello@edycu.dev',
     links: {
-        github: 'https://github.com/developer',
-        linkedin: 'https://linkedin.com/in/developer',
-        twitter: 'https://twitter.com/developer',
+        github: 'https://github.com/edycutjong',
+        linkedin: 'https://linkedin.com/in/edycu',
+        twitter: 'https://x.com/edycu',
     },
     skills: [
         {
