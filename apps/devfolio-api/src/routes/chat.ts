@@ -9,6 +9,15 @@ export const chatRouter = new Hono()
 // Store conversations (in production, use database/Redis)
 const conversations = new Map<string, Array<{ role: 'user' | 'assistant' | 'system'; content: string }>>()
 
+// Response cache for common questions (saves API calls)
+const responseCache = new Map<string, { response: string; timestamp: number }>()
+const CACHE_TTL_MS = 1000 * 60 * 60 // 1 hour cache
+
+// Rate limiting per IP (prevents abuse)
+const rateLimits = new Map<string, { count: number; resetTime: number }>()
+const RATE_LIMIT_MAX = 10 // 10 requests per minute
+const RATE_LIMIT_WINDOW_MS = 1000 * 60 // 1 minute
+
 // Initialize OpenAI client (only if API key is available)
 const openai = process.env.OPENAI_API_KEY
     ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
@@ -40,9 +49,47 @@ Guidelines:
 - Keep responses concise but informative (2-3 sentences max)
 - Highlight relevant projects when discussing skills`
 
+// Helper: Normalize message for caching
+function normalizeMessage(msg: string): string {
+    return msg.toLowerCase().trim().replace(/[^\w\s]/g, '').slice(0, 100)
+}
+
+// Helper: Check and update rate limit
+function checkRateLimit(ip: string): boolean {
+    const now = Date.now()
+    const limit = rateLimits.get(ip)
+
+    if (!limit || now > limit.resetTime) {
+        rateLimits.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW_MS })
+        return true
+    }
+
+    if (limit.count >= RATE_LIMIT_MAX) {
+        return false // Rate limited
+    }
+
+    limit.count++
+    return true
+}
+
 // POST /api/chat - Send a message to the AI chatbot
 chatRouter.post('/', zValidator('json', ChatMessageSchema), async (c) => {
     const { message, conversationId } = c.req.valid('json')
+
+    // Rate limiting
+    const clientIP = c.req.header('x-forwarded-for') || c.req.header('x-real-ip') || 'unknown'
+    if (!checkRateLimit(clientIP)) {
+        // Fall back to mock response instead of error
+        const mockResponse = generateMockResponse(message)
+        return c.json({
+            success: true,
+            data: {
+                response: mockResponse,
+                conversationId: conversationId || crypto.randomUUID(),
+                sources: findRelevantSources(message),
+            } as ChatResponse,
+        })
+    }
 
     // Get or create conversation
     const convId = conversationId || crypto.randomUUID()
@@ -52,9 +99,14 @@ chatRouter.post('/', zValidator('json', ChatMessageSchema), async (c) => {
     history.push({ role: 'user', content: message })
 
     let response: string
+    const cacheKey = normalizeMessage(message)
+    const cached = responseCache.get(cacheKey)
 
-    // Use OpenAI if available, otherwise fall back to mock
-    if (openai) {
+    // Check cache first (for common questions)
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+        response = cached.response
+    } else if (openai) {
+        // Use OpenAI if available
         try {
             const completion = await openai.chat.completions.create({
                 model: 'gpt-4o-mini',
@@ -66,6 +118,17 @@ chatRouter.post('/', zValidator('json', ChatMessageSchema), async (c) => {
                 temperature: 0.7,
             })
             response = completion.choices[0]?.message?.content || 'I apologize, I could not generate a response.'
+
+            // Cache the response for similar future questions
+            responseCache.set(cacheKey, { response, timestamp: Date.now() })
+
+            // Clean old cache entries (keep under 100)
+            if (responseCache.size > 100) {
+                const oldest = [...responseCache.entries()]
+                    .sort((a, b) => a[1].timestamp - b[1].timestamp)
+                    .slice(0, 20)
+                oldest.forEach(([key]) => responseCache.delete(key))
+            }
         } catch (error) {
             console.error('OpenAI API error:', error)
             response = generateMockResponse(message)
