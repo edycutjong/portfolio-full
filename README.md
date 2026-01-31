@@ -1,120 +1,145 @@
-# PortfolioFull — Multi-Stack Portfolio Workspace
+# PortfolioFull — Multi-Stack Portfolio Platform
 
-A monorepo containing 6 full-stack projects targeting high-paying remote positions ($120K-$300K+).
+<div align="center">
+
+![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js)
+![Python](https://img.shields.io/badge/Python-FastAPI-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Go](https://img.shields.io/badge/Go-WebSocket-00ADD8?style=for-the-badge&logo=go&logoColor=white)
+![Rust](https://img.shields.io/badge/Rust-Axum-000000?style=for-the-badge&logo=rust)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+
+**A production-ready monorepo showcasing 5 full-stack projects across 4 tech stacks**
+
+[**🌐 Live Demo**](https://edycu.dev) · [**📄 API Docs**](https://documind-api.edycu.dev/docs) · [**🔗 All Projects**](#-live-deployments)
+
+</div>
+
+---
 
 ## 🌐 Live Deployments
 
-| Project | Tech Stack | Live URL |
-|---------|------------|----------|
-| DevFolio Web | Next.js 15, TypeScript | [edycu.dev](https://edycu.dev) |
-| DevFolio API | Bun, Hono | [Vercel](https://devfolio-api.vercel.app) |
-| DocuMind API | Python, FastAPI | [documind-api.edycu.dev](https://documind-api.edycu.dev) |
-| FlowState API | Go, WebSocket | [flowstate-api.edycu.dev](https://flowstate-api.edycu.dev) |
-| DataPulse Analytics | Rust, Axum | [datapulse-api.edycu.dev](https://datapulse-api.edycu.dev) |
-| SolStake Protocol | Rust, Anchor | ❌ Blocked (LLVM) |
+| Project | Tech Stack | Live URL | Status |
+|---------|------------|----------|--------|
+| **DevFolio Web** | Next.js 15, TypeScript | [edycu.dev](https://edycu.dev) | ✅ Live |
+| **DevFolio API** | Bun, Hono | [Vercel](https://portfolio-full-devfolio-api.vercel.app) | ✅ Live |
+| **DocuMind API** | Python, FastAPI, RAG | [documind-api.edycu.dev](https://documind-api.edycu.dev) | ✅ Live |
+| **FlowState API** | Go, WebSocket | [flowstate-api.edycu.dev](https://flowstate-api.edycu.dev) | ✅ Live |
+| **DataPulse Analytics** | Rust, Axum | [datapulse-api.edycu.dev](https://datapulse-api.edycu.dev) | ✅ Live |
+| **DocuMind Web** | Next.js 15 | [documind.edycu.dev](https://documind.edycu.dev) | 🔄 Deploying |
 
-## 🚀 Projects
+---
 
+## 🚀 Featured Projects
 
-| Project | Description | Tech Stack | Status |
-|---------|-------------|------------|--------|
-| [DevFolio AI](./apps/devfolio-web) | AI-powered portfolio with chatbot | Next.js, Hono, OpenAI | 🔨 In Progress |
-| [DocuMind AI](./apps/documind-web) | Intelligent document Q&A | FastAPI, LangChain, Pinecone | 📋 Planned |
-| [LinkSnap](./apps/linksnap) | High-performance URL shortener | Go, Redis, Prometheus | 📋 Planned |
-| [SolMint](./apps/solmint-web) | No-code NFT minting platform | Rust, Anchor, Solana | 📋 Planned |
-| [SpendWise](./apps/spendwise) | Offline-first expense tracker | React Native, SQLite | 📋 Planned |
-| [InfraHub](./infra) | Reusable DevOps templates | Terraform, K8s, GitHub Actions | 📋 Planned |
+### 🧠 DocuMind AI — Intelligent Document Q&A
+> **Upload documents, ask questions, get cited answers using RAG technology**
 
-## 📁 Structure
+**Tech:** Python · FastAPI · LangChain · OpenAI GPT-4o-mini · Pinecone Vector DB
+
+**Key Features:**
+- PDF, DOCX, TXT document processing
+- Retrieval-Augmented Generation (RAG) pipeline
+- Smart chunking with source citations
+- RESTful API with OpenAPI docs
+
+🔗 [API Docs](https://documind-api.edycu.dev/docs) · [Live Demo](https://documind.edycu.dev)
+
+---
+
+### ⚡ FlowState API — Real-time Collaboration Engine
+> **WebSocket-powered state synchronization for collaborative apps**
+
+**Tech:** Go · Gorilla WebSocket · In-memory pub/sub
+
+**Key Features:**
+- Sub-millisecond message broadcasting
+- Room-based collaboration
+- Horizontal scaling support
+- Health monitoring endpoint
+
+🔗 [Live](https://flowstate-api.edycu.dev)
+
+---
+
+### 📊 DataPulse Analytics — High-Performance Analytics Engine
+> **Real-time streaming analytics built for speed**
+
+**Tech:** Rust · Axum · Tokio async runtime
+
+**Key Features:**
+- Memory-safe concurrent processing
+- Zero-cost abstractions
+- Docker-optimized deployment
+- JSON REST API
+
+🔗 [Live](https://datapulse-api.edycu.dev)
+
+---
+
+## 📁 Project Structure
 
 ```
-├── apps/                    # Deployable applications
-│   ├── devfolio-web/        # Portfolio frontend (Next.js)
-│   ├── devfolio-api/        # Portfolio API (Hono + Bun)
-│   ├── documind-web/        # AI SaaS frontend
-│   ├── documind-api/        # AI SaaS backend (FastAPI)
-│   ├── linksnap/            # URL shortener (Go)
-│   ├── solmint-web/         # NFT DApp frontend
-│   ├── solmint-contracts/   # Solana programs (Rust)
-│   └── spendwise/           # Mobile app (React Native)
-├── packages/                # Shared code
-│   ├── ui/                  # Shared React components
-│   ├── config/              # ESLint, Prettier, TypeScript configs
-│   └── utils/               # Shared utilities
-├── infra/                   # DevOps & Infrastructure
-│   ├── terraform/           # IaC templates
-│   ├── kubernetes/          # K8s manifests
-│   └── docker/              # Shared Dockerfiles
-└── docs/                    # Documentation
+📦 portfolio-full
+├── 🌐 apps/
+│   ├── devfolio-web/        # Portfolio frontend (Next.js 15)
+│   ├── devfolio-api/        # Portfolio API (Bun + Hono)
+│   ├── documind-web/        # AI SaaS frontend (Next.js)
+│   ├── documind-api/        # RAG backend (Python + FastAPI)
+│   ├── flowstate-api/       # WebSocket server (Go)
+│   └── datapulse-analytics/ # Analytics engine (Rust)
+├── 📦 packages/             # Shared code
+│   ├── ui/                  # React components
+│   └── config/              # ESLint, TypeScript configs
+└── 🔧 infra/                # DevOps templates
+    ├── terraform/
+    └── kubernetes/
 ```
 
-## 🛠️ Setup
+## 🛠️ Quick Start
 
 ```bash
-# Install Bun (if not installed)
-curl -fsSL https://bun.sh/install | bash
+# Clone
+git clone https://github.com/edycutjong/portfolio-full.git
+cd portfolio-full
 
-# Install dependencies
+# Install dependencies (Bun)
 bun install
 
-# Start development (specific project)
-cd apps/devfolio-web && bun dev
+# Start any project
+cd apps/devfolio-web && bun dev   # Next.js on :3000
+cd apps/documind-api && uv run fastapi dev   # Python on :8000
+cd apps/flowstate-api && go run .    # Go on :8080
+cd apps/datapulse-analytics && cargo run   # Rust on :8080
 ```
 
-## 🚀 Deployment (Vercel)
+## 📊 Tech Stack Overview
 
-### Prerequisites
-- GitHub account with code pushed to a repository
-- Vercel account (free tier works)
-- Supabase project (for database)
+| Layer | Technologies |
+|-------|-------------|
+| **Frontend** | Next.js 15, React 19, TypeScript, Tailwind CSS |
+| **Backend** | Python/FastAPI, Go, Rust/Axum, Bun/Hono |
+| **AI/ML** | OpenAI GPT-4o-mini, LangChain, Pinecone |
+| **Databases** | Supabase (PostgreSQL), Redis |
+| **DevOps** | Vercel, Railway, Docker, GitHub Actions |
+| **Monitoring** | UptimeRobot, Vercel Analytics |
 
-### Deploy Frontend (devfolio-web)
+## 🚀 Deployment
 
-1. Go to [vercel.com](https://vercel.com) → **Add New Project**
-2. Import your GitHub repository
-3. Configure:
-   - **Root Directory**: `apps/devfolio-web`
-   - **Framework**: Next.js
-   - **Build Command**: `bun run build`
-   - **Install Command**: `bun install`
-4. Add Environment Variables:
-   | Key | Value |
-   |-----|-------|
-   | `NEXT_PUBLIC_API_URL` | `https://your-api-project.vercel.app` |
-5. Click **Deploy**
+All projects are deployed across **Vercel** (Node.js/Python) and **Railway** (Go/Rust):
 
-### Deploy API (devfolio-api)
+- **Vercel**: devfolio-web, devfolio-api, documind-api, documind-web
+- **Railway**: flowstate-api, datapulse-analytics
 
-1. Go to [vercel.com](https://vercel.com) → **Add New Project**
-2. Import the **same** GitHub repository
-3. Configure:
-   - **Root Directory**: `apps/devfolio-api`
-   - **Framework**: Other
-4. Add Environment Variables:
-   | Key | Value |
-   |-----|-------|
-   | `SUPABASE_URL` | `https://xxx.supabase.co` |
-   | `SUPABASE_ANON_KEY` | `your-anon-key` |
-5. Click **Deploy**
+See individual project READMEs for deployment instructions.
 
-### Live URLs
+## 👨‍💻 About
 
-| Project | URL |
-|---------|-----|
-| Frontend | https://portfolio-full-devfolio-web.vercel.app |
-| API | https://portfolio-full-devfolio-api.vercel.app |
+Built by **Edy Cu** — Full-stack engineer focused on building scalable, production-ready applications.
 
-### Custom Domain (Optional)
-
-1. Go to Project → **Settings** → **Domains**
-2. Add your domain (e.g., `yourdomain.com`)
-3. Update DNS at your registrar:
-   ```
-   CNAME  @  cname.vercel-dns.com
-   CNAME  www  cname.vercel-dns.com
-   ```
-4. SSL is automatic and free ✅
+- 🌐 Portfolio: [edycu.dev](https://edycu.dev)
+- 💼 LinkedIn: [edycutjong](https://linkedin.com/in/edycutjong)
+- 🐙 GitHub: [edycutjong](https://github.com/edycutjong)
 
 ## 📄 License
 
-MIT
+MIT © 2026 Edy Cu
