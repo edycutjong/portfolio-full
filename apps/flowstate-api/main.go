@@ -211,11 +211,11 @@ func handleRoomByID(w http.ResponseWriter, r *http.Request) {
 		room.mutex.RLock()
 		clients := make([]map[string]interface{}, 0, len(room.Clients))
 		for _, c := range room.Clients {
-			clients[len(clients):] = []map[string]interface{}{{
+			clients = append(clients, map[string]interface{}{
 				"id":    c.ID,
 				"name":  c.Name,
 				"color": c.Color,
-			}}
+			})
 		}
 		room.mutex.RUnlock()
 

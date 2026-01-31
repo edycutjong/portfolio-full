@@ -18,7 +18,6 @@ use serde::{Deserialize, Serialize};
 use std::{
     collections::HashMap,
     sync::Arc,
-    time::Duration,
 };
 use tokio::sync::RwLock;
 use tower_http::cors::CorsLayer;
@@ -362,7 +361,7 @@ mod tests {
         body::Body,
         http::{Request, StatusCode},
     };
-    use tower::ServiceExt;
+    use tower::util::ServiceExt;
 
     fn create_test_app() -> Router {
         let state = Arc::new(AppState::default());
