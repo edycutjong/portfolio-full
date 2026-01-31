@@ -1,13 +1,10 @@
 # Build stage
 FROM rust:1.84-bookworm as builder
 
-# Install dependencies for rdkafka
+# Install minimal dependencies
 RUN apt-get update && apt-get install -y \
-    cmake \
-    build-essential \
-    libssl-dev \
     pkg-config \
-    libsasl2-dev \
+    libssl-dev \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -23,6 +20,9 @@ RUN rm -rf src
 # Copy actual source code
 COPY src ./src
 
+# Touch to update timestamp and rebuild
+RUN touch src/main.rs
+
 # Build for release
 RUN cargo build --release
 
@@ -32,7 +32,6 @@ FROM debian:bookworm-slim
 RUN apt-get update && apt-get install -y \
     ca-certificates \
     libssl3 \
-    libsasl2-2 \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
