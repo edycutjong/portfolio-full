@@ -1,0 +1,10 @@
+{
+    "$schema": "https://openapi.vercel.sh/vercel.json",
+    "buildCommand": "cd ../.. && bun install && bun run build --filter=devfolio-web",
+    "outputDirectory": ".next",
+    "framework": "nextjs",
+    "installCommand": "cd ../.. && bun install",
+    "env": {
+        "NEXT_PUBLIC_API_URL": "https://devfolio-api.vercel.app"
+    }
+}
