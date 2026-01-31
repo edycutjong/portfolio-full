@@ -24,7 +24,13 @@ app = FastAPI(
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "https://documind.vercel.app"],
+    allow_origins=[
+        "http://localhost:3000",
+        "https://documind.vercel.app",
+        "https://edycu.dev",
+        "https://www.edycu.dev",
+        "https://documind.edycu.dev",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
