@@ -1,15 +1,9 @@
 # Build stage
 FROM rust:1.84-bookworm as builder
 
-# Install dependencies
-RUN apt-get update && apt-get install -y \
-    pkg-config \
-    libssl-dev \
-    && rm -rf /var/lib/apt/lists/*
-
 WORKDIR /app
 
-# Copy manifests
+# Copy manifests first for dependency caching
 COPY Cargo.toml Cargo.lock ./
 
 # Create dummy main.rs to cache dependencies
@@ -26,10 +20,10 @@ RUN touch src/main.rs
 # Build for release
 RUN cargo build --release
 
-# Verify binary exists
-RUN ls -la target/release/datapulse
+# Verify binary exists and show info
+RUN ls -la target/release/datapulse && file target/release/datapulse
 
-# Runtime stage - use slim with glibc
+# Runtime stage
 FROM debian:bookworm-slim
 
 # Install runtime dependencies
@@ -43,14 +37,15 @@ WORKDIR /app
 # Copy binary
 COPY --from=builder /app/target/release/datapulse /app/datapulse
 
-# Make executable
-RUN chmod +x /app/datapulse
+# Verify binary is copied and executable
+RUN chmod +x /app/datapulse && ls -la /app/datapulse
 
-# Set PORT env (Railway overrides this)
+# Set environment variables
 ENV PORT=8080
 ENV RUST_LOG=info
+ENV RUST_BACKTRACE=1
 
 EXPOSE 8080
 
-# Run the binary
-CMD ["/app/datapulse"]
+# Run binary directly
+ENTRYPOINT ["/app/datapulse"]
