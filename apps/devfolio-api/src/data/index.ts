@@ -104,8 +104,8 @@ export const profile: Profile = {
     email: 'hello@edycu.dev',
     links: {
         github: 'https://github.com/edycutjong',
-        linkedin: 'https://linkedin.com/in/edycu',
-        twitter: 'https://x.com/edycu',
+        linkedin: 'https://linkedin.com/in/edy-cu-tjong',
+        twitter: 'https://x.com/edycutjong',
     },
     skills: [
         {
