@@ -2,11 +2,17 @@ import { Hono } from 'hono'
 import { zValidator } from '@hono/zod-validator'
 import { ChatMessageSchema, type ChatResponse } from '../types'
 import { profile, projects } from '../data'
+import OpenAI from 'openai'
 
 export const chatRouter = new Hono()
 
 // Store conversations (in production, use database/Redis)
-const conversations = new Map<string, Array<{ role: string; content: string }>>()
+const conversations = new Map<string, Array<{ role: 'user' | 'assistant' | 'system'; content: string }>>()
+
+// Initialize OpenAI client (only if API key is available)
+const openai = process.env.OPENAI_API_KEY
+    ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+    : null
 
 // System prompt for the AI chatbot
 const SYSTEM_PROMPT = `You are an AI assistant for a developer's portfolio website. 
@@ -31,7 +37,7 @@ Guidelines:
 - Be helpful and professional
 - Answer questions about skills, projects, and experience
 - If asked something you don't know, suggest contacting the developer directly
-- Keep responses concise but informative
+- Keep responses concise but informative (2-3 sentences max)
 - Highlight relevant projects when discussing skills`
 
 // POST /api/chat - Send a message to the AI chatbot
@@ -45,15 +51,34 @@ chatRouter.post('/', zValidator('json', ChatMessageSchema), async (c) => {
     // Add user message to history
     history.push({ role: 'user', content: message })
 
-    // In production, this would call OpenAI API
-    // For now, use a simple keyword-based response
-    const response = generateMockResponse(message)
+    let response: string
+
+    // Use OpenAI if available, otherwise fall back to mock
+    if (openai) {
+        try {
+            const completion = await openai.chat.completions.create({
+                model: 'gpt-4o-mini',
+                messages: [
+                    { role: 'system', content: SYSTEM_PROMPT },
+                    ...history.slice(-10) // Keep last 10 messages for context
+                ],
+                max_tokens: 300,
+                temperature: 0.7,
+            })
+            response = completion.choices[0]?.message?.content || 'I apologize, I could not generate a response.'
+        } catch (error) {
+            console.error('OpenAI API error:', error)
+            response = generateMockResponse(message)
+        }
+    } else {
+        response = generateMockResponse(message)
+    }
 
     // Add assistant response to history
     history.push({ role: 'assistant', content: response })
 
-    // Store conversation
-    conversations.set(convId, history)
+    // Store conversation (keep only last 20 messages)
+    conversations.set(convId, history.slice(-20))
 
     const chatResponse: ChatResponse = {
         response,
