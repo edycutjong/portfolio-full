@@ -111,6 +111,33 @@ CHROMA_HOST=localhost        # Optional: ChromaDB host
 CHROMA_PORT=8000             # Optional: ChromaDB port
 ```
 
+## Vercel Deployment
+
+### Prerequisites
+- Vercel account connected to GitHub
+
+### Setup
+
+1. **Import Project** in Vercel Dashboard
+   - Repository: `edycutjong/portfolio-full`
+   - Root Directory: `apps/documind-api`
+
+2. **Framework Settings**
+   - Framework Preset: `Other`
+   - Install Command: `pip install -r requirements.txt` (Override: ON ✅)
+   - Build/Output commands: Leave empty
+
+3. **Environment Variables**
+   - `OPENAI_API_KEY` = your OpenAI API key
+
+4. **Deploy**
+
+> ⚠️ **Note**: The Install Command override is required due to a bug in Vercel's `uv` package manager with werkzeug dependencies. Using `pip` directly works around this issue.
+
+### Deployed URLs
+- Production: `https://documind-api.vercel.app/`
+- Preview: Auto-generated for each PR
+
 ## License
 
 MIT
