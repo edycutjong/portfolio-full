@@ -39,7 +39,8 @@ export function ChatBot() {
         setIsLoading(true)
 
         try {
-            const res = await fetch('http://localhost:8787/api/chat', {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787'
+            const res = await fetch(`${apiUrl}/api/chat`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message: userMessage, conversationId }),
@@ -112,8 +113,8 @@ export function ChatBot() {
                             >
                                 <div
                                     className={`max-w-[80%] px-4 py-2 rounded-2xl ${msg.role === 'user'
-                                            ? 'bg-gradient-to-r from-primary-500 to-accent-500'
-                                            : 'bg-white/10'
+                                        ? 'bg-gradient-to-r from-primary-500 to-accent-500'
+                                        : 'bg-white/10'
                                         }`}
                                 >
                                     {msg.content}
