@@ -45,7 +45,7 @@ export function Header() {
                     ))}
                     <li>
                         <a
-                            href="/resume.pdf"
+                            href="#contact"
                             className="px-6 py-2 bg-gradient-to-r from-primary-500 to-accent-500 rounded-full font-semibold hover:opacity-90 transition-opacity"
                         >
                             Resume
@@ -100,8 +100,9 @@ export function Header() {
                             ))}
                             <li>
                                 <a
-                                    href="/resume.pdf"
+                                    href="#contact"
                                     className="block px-6 py-2 text-center bg-gradient-to-r from-primary-500 to-accent-500 rounded-full font-semibold"
+                                    onClick={() => setMobileMenuOpen(false)}
                                 >
                                     Resume
                                 </a>
