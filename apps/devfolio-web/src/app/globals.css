@@ -2,11 +2,48 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+/* Dark theme (default) */
+:root,
+.dark {
   --background: #0f0f0f;
   --foreground: #ffffff;
   --glass-bg: rgba(255, 255, 255, 0.05);
   --glass-border: rgba(255, 255, 255, 0.1);
+  --card-bg: rgba(255, 255, 255, 0.05);
+  --muted: #9ca3af;
+  --accent: #22c55e;
+  --accent-secondary: #a855f7;
+}
+
+/* Light theme */
+.light {
+  --background: #fafafa;
+  --foreground: #171717;
+  --glass-bg: rgba(0, 0, 0, 0.02);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --card-bg: rgba(0, 0, 0, 0.03);
+  --muted: #6b7280;
+  --accent: #16a34a;
+  --accent-secondary: #9333ea;
+}
+
+.light body {
+  background: linear-gradient(135deg, #fafafa 0%, #f0f0f0 50%, #fafafa 100%);
+}
+
+.light .glass {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+.light .glass-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.light .gradient-bg::before {
+  background: radial-gradient(circle at 25% 25%, rgba(34, 197, 94, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(168, 85, 247, 0.05) 0%, transparent 50%);
 }
 
 * {
@@ -80,10 +117,12 @@ body {
 }
 
 @keyframes float {
+
   0%,
   100% {
     transform: translate(0, 0);
   }
+
   50% {
     transform: translate(-5%, -5%);
   }

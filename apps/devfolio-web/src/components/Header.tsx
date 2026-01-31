@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
+import { ThemeToggle } from './ThemeToggle'
 
 export function Header() {
     const [scrolled, setScrolled] = useState(false)
@@ -43,6 +44,9 @@ export function Header() {
                             </a>
                         </li>
                     ))}
+                    <li>
+                        <ThemeToggle />
+                    </li>
                     <li>
                         <a
                             href="/resume"
