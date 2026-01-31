@@ -15,7 +15,12 @@ app.use('*', prettyJSON())
 app.use(
     '*',
     cors({
-        origin: ['http://localhost:3000', 'https://devfolio.vercel.app'],
+        origin: [
+            'http://localhost:3000',
+            'https://devfolio.vercel.app',
+            'https://portfolio-full-devfolio-web.vercel.app',
+            /\.vercel\.app$/,  // Allow all Vercel preview deployments
+        ],
         allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
         allowHeaders: ['Content-Type', 'Authorization'],
     })
