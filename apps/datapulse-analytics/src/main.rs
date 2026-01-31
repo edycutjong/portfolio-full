@@ -344,11 +344,14 @@ async fn main() {
     let state = Arc::new(AppState::default());
     let app = create_router(state);
 
-    let addr = "0.0.0.0:8003";
+    // Use PORT env variable for Railway, fallback to 8080
+    let port = std::env::var("PORT").unwrap_or_else(|_| "8080".to_string());
+    let addr = format!("0.0.0.0:{}", port);
+    
     tracing::info!("🚀 DataPulse Analytics running on http://{}", addr);
     tracing::info!("📊 Streaming analytics engine ready");
 
-    let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
+    let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }
 
