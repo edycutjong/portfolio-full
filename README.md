@@ -49,6 +49,60 @@ bun install
 cd apps/devfolio-web && bun dev
 ```
 
+## 🚀 Deployment (Vercel)
+
+### Prerequisites
+- GitHub account with code pushed to a repository
+- Vercel account (free tier works)
+- Supabase project (for database)
+
+### Deploy Frontend (devfolio-web)
+
+1. Go to [vercel.com](https://vercel.com) → **Add New Project**
+2. Import your GitHub repository
+3. Configure:
+   - **Root Directory**: `apps/devfolio-web`
+   - **Framework**: Next.js
+   - **Build Command**: `bun run build`
+   - **Install Command**: `bun install`
+4. Add Environment Variables:
+   | Key | Value |
+   |-----|-------|
+   | `NEXT_PUBLIC_API_URL` | `https://your-api-project.vercel.app` |
+5. Click **Deploy**
+
+### Deploy API (devfolio-api)
+
+1. Go to [vercel.com](https://vercel.com) → **Add New Project**
+2. Import the **same** GitHub repository
+3. Configure:
+   - **Root Directory**: `apps/devfolio-api`
+   - **Framework**: Other
+4. Add Environment Variables:
+   | Key | Value |
+   |-----|-------|
+   | `SUPABASE_URL` | `https://xxx.supabase.co` |
+   | `SUPABASE_ANON_KEY` | `your-anon-key` |
+5. Click **Deploy**
+
+### Live URLs
+
+| Project | URL |
+|---------|-----|
+| Frontend | https://portfolio-full-devfolio-web.vercel.app |
+| API | https://portfolio-full-devfolio-api.vercel.app |
+
+### Custom Domain (Optional)
+
+1. Go to Project → **Settings** → **Domains**
+2. Add your domain (e.g., `yourdomain.com`)
+3. Update DNS at your registrar:
+   ```
+   CNAME  @  cname.vercel-dns.com
+   CNAME  www  cname.vercel-dns.com
+   ```
+4. SSL is automatic and free ✅
+
 ## 📄 License
 
 MIT
