@@ -42,7 +42,7 @@
 - Smart chunking with source citations
 - RESTful API with OpenAPI docs
 
-🔗 [API Docs](https://documind-api.edycu.dev/docs) · [Live Demo](https://documind.edycu.dev)
+🔗 [API Docs](https://documind-api.edycu.dev/docs) · [Live Demo](https://documind.edycu.dev) · [📖 Case Study](./docs/case-studies/DOCUMIND.md)
 
 ---
 
@@ -57,7 +57,7 @@
 - Horizontal scaling support
 - Health monitoring endpoint
 
-🔗 [Live](https://flowstate-api.edycu.dev)
+🔗 [Live](https://flowstate-api.edycu.dev) · [📖 Case Study](./docs/case-studies/FLOWSTATE.md)
 
 ---
 
@@ -72,7 +72,7 @@
 - Docker-optimized deployment
 - JSON REST API
 
-🔗 [Live](https://datapulse-api.edycu.dev)
+🔗 [Live](https://datapulse-api.edycu.dev) · [📖 Case Study](./docs/case-studies/DATAPULSE.md)
 
 ---
 
