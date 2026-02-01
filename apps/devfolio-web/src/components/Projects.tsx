@@ -67,7 +67,7 @@ const projects = [
         longDescription: 'Solana staking platform with on-chain rewards distribution. Built with Anchor framework for secure smart contract development.',
         techStack: ['Rust', 'Anchor', 'Solana', 'TypeScript'],
         category: 'web3',
-        status: 'planned',
+        status: 'completed',
         featured: false,
         icon: '💎',
         github: 'https://github.com/edycutjong/portfolio-full',
@@ -80,9 +80,10 @@ const projects = [
         longDescription: 'Battle-tested infrastructure templates for AWS, GCP, and Azure. Deploy production-grade Kubernetes clusters in minutes.',
         techStack: ['Terraform', 'Kubernetes', 'GitHub Actions', 'Docker'],
         category: 'devops',
-        status: 'planned',
+        status: 'completed',
         featured: false,
         icon: '🚀',
+        github: 'https://github.com/edycutjong/portfolio-full',
     },
 ]
 

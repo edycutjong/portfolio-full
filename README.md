@@ -26,6 +26,8 @@
 | **FlowState API** | Go, WebSocket | [flowstate-api.edycu.dev](https://flowstate-api.edycu.dev) | ✅ Live |
 | **DataPulse Analytics** | Rust, Axum | [datapulse-api.edycu.dev](https://datapulse-api.edycu.dev) | ✅ Live |
 | **DocuMind Web** | Next.js 15 | [documind.edycu.dev](https://documind.edycu.dev) | ✅ Live |
+| **SolStake Protocol** | Rust, Anchor, Solana | [GitHub](https://github.com/edycutjong/portfolio-full/tree/main/apps/solstake-protocol) | ✅ Complete |
+| **InfraHub** | Terraform, Kubernetes, Docker | [GitHub](https://github.com/edycutjong/portfolio-full/tree/main/infra) | ✅ Complete |
 
 ---
 
