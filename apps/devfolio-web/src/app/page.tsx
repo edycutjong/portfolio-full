@@ -1,7 +1,6 @@
 import { Hero } from '@/components/Hero'
 import { Projects } from '@/components/Projects'
 import { Skills } from '@/components/Skills'
-// import { Testimonials } from '@/components/Testimonials' // Hidden for now
 import { Contact } from '@/components/Contact'
 import { ChatBot } from '@/components/ChatBot'
 import { Header } from '@/components/Header'
@@ -15,7 +14,6 @@ export default function Home() {
         <Hero />
         <Projects />
         <Skills />
-        {/* <Testimonials /> */}
         <Contact />
       </main>
       <Footer />
