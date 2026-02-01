@@ -177,7 +177,7 @@ export default function Home() {
             }} />
 
             {/* Left Sidebar - Documents */}
-            <div style={{ ...glassCard, width: '260px', minWidth: '260px', display: 'flex', flexDirection: 'column', padding: '16px' }}>
+            <div style={{ ...glassCard, width: '260px', minWidth: '260px', display: 'flex', flexDirection: 'column', padding: '16px', overflow: 'hidden' }}>
                 {/* Logo */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px', paddingBottom: '16px', borderBottom: '1px solid rgba(99, 102, 241, 0.1)' }}>
                     <div style={{
@@ -282,7 +282,7 @@ export default function Home() {
             {/* Center - Chat */}
             <div style={{ ...glassCard, flex: 1, display: 'flex', flexDirection: 'column', padding: '16px', minWidth: 0 }}>
                 {/* Messages */}
-                <div style={{ flex: 1, overflowY: 'auto', paddingBottom: '16px' }}>
+                <div style={{ flex: 1, overflowY: 'auto' }}>
                     {messages.length === 0 ? (
                         <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <p style={{ color: '#64748b', fontSize: '13px' }}>Ask anything about your documents...</p>
