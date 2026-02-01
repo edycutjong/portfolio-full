@@ -140,11 +140,45 @@ export default function Home() {
     return (
         <div style={{
             minHeight: '100vh',
-            background: 'linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #0f172a 100%)',
+            background: '#0a0a1a',
             padding: '20px',
             display: 'flex',
-            gap: '20px'
+            gap: '20px',
+            position: 'relative',
+            overflow: 'hidden'
         }}>
+            {/* Background Glow Effects */}
+            <div style={{
+                position: 'absolute',
+                top: '-20%',
+                left: '10%',
+                width: '500px',
+                height: '500px',
+                background: 'radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, transparent 70%)',
+                filter: 'blur(80px)',
+                pointerEvents: 'none'
+            }} />
+            <div style={{
+                position: 'absolute',
+                bottom: '-10%',
+                right: '20%',
+                width: '600px',
+                height: '600px',
+                background: 'radial-gradient(circle, rgba(139, 92, 246, 0.25) 0%, transparent 70%)',
+                filter: 'blur(100px)',
+                pointerEvents: 'none'
+            }} />
+            <div style={{
+                position: 'absolute',
+                top: '50%',
+                right: '-5%',
+                width: '400px',
+                height: '400px',
+                background: 'radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%)',
+                filter: 'blur(60px)',
+                pointerEvents: 'none'
+            }} />
+
             {/* Left Sidebar - Documents */}
             <div style={{ ...glassCard, width: '280px', minWidth: '280px', display: 'flex', flexDirection: 'column', padding: '20px' }}>
                 {/* Logo */}
