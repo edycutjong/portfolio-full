@@ -4,7 +4,8 @@
         "outDir": "./dist",
         "rootDir": "./src",
         "types": [
-            "bun-types"
+            "bun-types",
+            "node"
         ]
     },
     "include": [
