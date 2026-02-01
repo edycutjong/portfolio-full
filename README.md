@@ -21,11 +21,11 @@
 | Project | Tech Stack | Live URL | Status |
 |---------|------------|----------|--------|
 | **DevFolio Web** | Next.js 15, TypeScript | [edycu.dev](https://edycu.dev) | ✅ Live |
-| **DevFolio API** | Bun, Hono | [Vercel](https://api.edycu.dev) | ✅ Live |
+| **DevFolio API** | Bun, Hono | [api.edycu.dev](https://api.edycu.dev) | ✅ Live |
 | **DocuMind API** | Python, FastAPI, RAG | [documind-api.edycu.dev](https://documind-api.edycu.dev) | ✅ Live |
 | **FlowState API** | Go, WebSocket | [flowstate-api.edycu.dev](https://flowstate-api.edycu.dev) | ✅ Live |
 | **DataPulse Analytics** | Rust, Axum | [datapulse-api.edycu.dev](https://datapulse-api.edycu.dev) | ✅ Live |
-| **DocuMind Web** | Next.js 15 | [documind.edycu.dev](https://documind.edycu.dev) | 🔄 Deploying |
+| **DocuMind Web** | Next.js 15 | [documind.edycu.dev](https://documind.edycu.dev) | ✅ Live |
 
 ---
 
@@ -137,7 +137,7 @@ See individual project READMEs for deployment instructions.
 Built by **Edy Cu** — Full-stack engineer focused on building scalable, production-ready applications.
 
 - 🌐 Portfolio: [edycu.dev](https://edycu.dev)
-- 💼 LinkedIn: [edycutjong](https://linkedin.com/in/edycutjong)
+- 💼 LinkedIn: [edycutjong](https://id.linkedin.com/in/edy-cu-tjong)
 - 🐙 GitHub: [edycutjong](https://github.com/edycutjong)
 
 ## 📄 License
