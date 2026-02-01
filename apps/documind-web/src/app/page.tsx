@@ -135,7 +135,7 @@ export default function Home() {
 
     return (
         <div style={{
-            minHeight: '100vh',
+            height: '100vh',
             background: '#0a0a1a',
             padding: '16px',
             display: 'flex',
@@ -400,82 +400,67 @@ export default function Home() {
 
             {/* Right Sidebar - Document Preview */}
             {activeDoc && (
-                <div style={{ ...glassCard, width: '280px', minWidth: '280px', padding: '16px', display: 'flex', flexDirection: 'column' }}>
+                <div style={{ ...glassCard, width: '260px', minWidth: '260px', padding: '16px', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                     <h3 style={{
-                        fontSize: '11px',
+                        fontSize: '12px',
                         fontWeight: 600,
-                        color: '#94a3b8',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.08em',
-                        marginBottom: '14px'
+                        color: 'white',
+                        marginBottom: '12px'
                     }}>Document Preview & Summary</h3>
 
                     {/* Document Header */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-                        <div style={{
-                            width: '24px',
-                            height: '24px',
-                            borderRadius: '5px',
-                            backgroundColor: getFileIcon(activeDoc.name).bg,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontSize: '8px',
-                            fontWeight: 700,
-                            color: 'white'
-                        }}>{getFileIcon(activeDoc.name).label}</div>
-                        <span style={{ fontSize: '12px', color: 'white', fontWeight: 500 }}>{activeDoc.name}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+                        <span style={{ fontSize: '16px' }}>📄</span>
+                        <span style={{ fontSize: '11px', color: 'white', fontWeight: 500 }}>{activeDoc.name}</span>
                     </div>
 
-                    {/* Preview - styled like mockup */}
+                    {/* Preview - compact like mockup */}
                     <div style={{
-                        aspectRatio: '3/4',
-                        borderRadius: '10px',
-                        background: 'linear-gradient(180deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%)',
-                        border: '1px solid rgba(99, 102, 241, 0.15)',
+                        height: '140px',
+                        borderRadius: '8px',
+                        background: 'linear-gradient(180deg, rgba(30, 41, 59, 0.5) 0%, rgba(15, 23, 42, 0.7) 100%)',
+                        border: '1px solid rgba(99, 102, 241, 0.1)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        padding: '16px',
-                        marginBottom: '14px'
+                        padding: '12px',
+                        marginBottom: '10px'
                     }}>
                         <div style={{
-                            width: '80%',
+                            width: '70%',
                             background: 'white',
-                            borderRadius: '4px',
-                            padding: '14px 10px',
-                            boxShadow: '0 8px 24px rgba(0,0,0,0.4)'
+                            borderRadius: '3px',
+                            padding: '10px 8px',
+                            boxShadow: '0 4px 16px rgba(0,0,0,0.3)'
                         }}>
-                            <div style={{ height: '10px', background: '#1e293b', borderRadius: '2px', marginBottom: '8px', width: '70%' }} />
-                            <div style={{ height: '3px', background: '#cbd5e1', borderRadius: '1px', marginBottom: '4px' }} />
-                            <div style={{ height: '3px', background: '#cbd5e1', borderRadius: '1px', marginBottom: '4px', width: '85%' }} />
-                            <div style={{ height: '3px', background: '#cbd5e1', borderRadius: '1px', marginBottom: '4px', width: '95%' }} />
-                            <div style={{ height: '3px', background: '#cbd5e1', borderRadius: '1px', width: '60%' }} />
+                            <div style={{ height: '6px', background: '#3b82f6', borderRadius: '1px', marginBottom: '6px', width: '60%' }} />
+                            <div style={{ height: '2px', background: '#e2e8f0', borderRadius: '1px', marginBottom: '3px' }} />
+                            <div style={{ height: '2px', background: '#e2e8f0', borderRadius: '1px', marginBottom: '3px', width: '90%' }} />
+                            <div style={{ height: '2px', background: '#e2e8f0', borderRadius: '1px', marginBottom: '3px', width: '80%' }} />
+                            <div style={{ height: '2px', background: '#e2e8f0', borderRadius: '1px', width: '70%' }} />
                         </div>
                     </div>
 
-                    {/* Summary text - longer like mockup */}
-                    <p style={{ fontSize: '11px', color: '#94a3b8', lineHeight: 1.7, marginBottom: '14px' }}>
+                    {/* Summary text */}
+                    <p style={{ fontSize: '10px', color: '#94a3b8', lineHeight: 1.6, marginBottom: '10px' }}>
                         This document covers the company&apos;s financial performance, strategic initiatives, and market outlook for the fiscal year 2023, highlighting growth in revenue and profitability.
                     </p>
 
-                    {/* Stats - smaller icons */}
-                    <div style={{
-                        background: 'rgba(15, 23, 42, 0.5)',
-                        borderRadius: '10px',
-                        padding: '12px',
-                        marginBottom: '12px'
-                    }}>
-                        <h4 style={{ fontSize: '10px', fontWeight: 600, color: '#94a3b8', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Key Stats</h4>
+                    {/* Key Stats - no background like mockup */}
+                    <div style={{ marginBottom: '10px' }}>
+                        <h4 style={{ fontSize: '10px', fontWeight: 600, color: '#64748b', marginBottom: '8px' }}>Key Stats</h4>
                         {[
                             { icon: '📄', label: 'Pages', value: activeDoc.pages || 45 },
-                            { icon: 'Aa', label: 'Words Extracted', value: '12,500' },
+                            { icon: 'Aa', label: 'Words Extracted', value: '12,500', isText: true },
                             { icon: '🏷', label: 'Entities Identified', value: 150 },
                             { icon: '⚡', label: 'Processing Time', value: '2.5s' }
-                        ].map(stat => (
-                            <div key={stat.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '6px 0', borderBottom: '1px solid rgba(99, 102, 241, 0.08)' }}>
-                                <span style={{ fontSize: '11px', color: '#64748b' }}>{stat.icon} {stat.label}</span>
-                                <span style={{ fontSize: '11px', color: 'white', fontWeight: 600 }}>{stat.value}</span>
+                        ].map((stat, idx) => (
+                            <div key={stat.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '5px 0', borderBottom: idx < 3 ? '1px solid rgba(255,255,255,0.05)' : 'none' }}>
+                                <span style={{ fontSize: '10px', color: '#64748b' }}>
+                                    {'isText' in stat ? <span style={{ fontWeight: 700, color: '#94a3b8', marginRight: '4px' }}>Aa</span> : <span style={{ marginRight: '4px' }}>{stat.icon}</span>}
+                                    {stat.label}
+                                </span>
+                                <span style={{ fontSize: '11px', color: 'white', fontWeight: 700 }}>{stat.value}</span>
                             </div>
                         ))}
                     </div>
