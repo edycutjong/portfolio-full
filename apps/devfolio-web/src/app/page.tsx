@@ -9,9 +9,9 @@ import { Footer } from '@/components/Footer'
 
 export default function Home() {
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <Header />
-      <main className="relative z-10">
+      <main className="relative z-10 flex-1">
         <Hero />
         <Projects />
         <Skills />
@@ -20,6 +20,6 @@ export default function Home() {
       </main>
       <Footer />
       <ChatBot />
-    </>
+    </div>
   )
 }
