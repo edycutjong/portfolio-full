@@ -1,0 +1,48 @@
+---
+title: "DataPulse Analytics"
+publishedAt: "2025-01-05"
+summary: "High-performance streaming analytics engine with memory-safe concurrent processing in Rust."
+images:
+  - "/images/projects/datapulse/cover.jpg"
+team:
+  - name: "Edy Cu"
+    role: "Backend Engineer"
+    avatar: "/images/avatar.jpg"
+    linkedIn: "https://linkedin.com/in/edy-cu-tjong"
+link: "https://datapulse-api.edycu.dev"
+---
+
+## Overview
+
+DataPulse Analytics is a real-time streaming analytics engine built with Rust for maximum performance and memory safety. It processes millions of events with zero-cost abstractions and provides blazing-fast aggregate computations.
+
+## Key Features
+
+- **Streaming Architecture**: Process events as they arrive with minimal latency
+- **Memory Safety**: Rust's ownership system prevents data races and memory leaks
+- **Zero-Cost Abstractions**: High-level APIs with no runtime overhead
+- **Horizontal Scaling**: Partition-based processing for distributed workloads
+
+## Technologies Used
+
+- **Rust**: Memory-safe systems programming
+- **Axum**: Ergonomic async web framework
+- **Tokio**: Async runtime for high-concurrency workloads
+- **PostgreSQL**: Durable storage for aggregated metrics
+
+## Performance Benchmarks
+
+- 1M+ events/second ingestion rate
+- P99 latency under 10ms for aggregation queries
+- Memory footprint under 100MB for typical workloads
+
+## Architecture
+
+The engine uses a multi-stage pipeline:
+1. **Ingestion**: Async batch processing with backpressure
+2. **Processing**: Stateless transformations with actor model
+3. **Aggregation**: Time-windowed computations with efficient storage
+
+## Outcome
+
+DataPulse demonstrates mastery of Rust for high-performance systems, combining safety guarantees with production-grade performance.

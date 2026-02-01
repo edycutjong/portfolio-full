@@ -1,0 +1,42 @@
+---
+title: "FlowState"
+publishedAt: "2025-01-10"
+summary: "Real-time collaboration engine with WebSocket-powered state synchronization and room-based architecture."
+images:
+  - "/images/projects/flowstate/cover.jpg"
+team:
+  - name: "Edy Cu"
+    role: "Backend Engineer"
+    avatar: "/images/avatar.jpg"
+    linkedIn: "https://linkedin.com/in/edy-cu-tjong"
+link: "https://flowstate-api.edycu.dev"
+---
+
+## Overview
+
+FlowState is a high-performance real-time collaboration engine built for horizontal scaling. It provides sub-millisecond message broadcasting with room-based architecture, making it ideal for collaborative applications like document editors, whiteboards, and multiplayer games.
+
+## Key Features
+
+- **WebSocket Architecture**: Persistent bidirectional connections for instant state updates
+- **Room-Based Isolation**: Users can join specific rooms with automatic connection management
+- **Horizontal Scaling**: Redis pub/sub enables multiple server instances to communicate
+- **Connection Recovery**: Automatic reconnection with state reconciliation
+
+## Technologies Used
+
+- **Go**: High-performance, concurrent backend
+- **Gorilla WebSocket**: Production-ready WebSocket implementation
+- **Redis**: Pub/sub for cross-instance communication
+- **Docker**: Containerized deployment
+
+## Performance
+
+Built with Go's goroutines for lightweight concurrency:
+- Handles 10,000+ concurrent connections per instance
+- Sub-millisecond message latency
+- Efficient memory usage via connection pooling
+
+## Outcome
+
+FlowState showcases expertise in building real-time systems with Go, demonstrating understanding of concurrent programming patterns and distributed system design.

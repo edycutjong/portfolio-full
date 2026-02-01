@@ -1,174 +1,240 @@
-'use client'
+"use client";
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect } from "react";
+import {
+    Button,
+    Column,
+    Flex,
+    Heading,
+    Input,
+    Text,
+} from "@once-ui-system/core";
 
 interface Message {
-    role: 'user' | 'assistant'
-    content: string
+    role: "user" | "assistant";
+    content: string;
 }
 
 export function ChatBot() {
-    const [isOpen, setIsOpen] = useState(false)
+    const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<Message[]>([
         {
-            role: 'assistant',
+            role: "assistant",
             content:
-                "👋 Hi! I'm an AI assistant that knows everything about this developer. Ask me about their skills, projects, or experience!",
+                "👋 Hi! I'm an AI assistant that knows everything about Edy. Ask me about skills, projects, or experience!",
         },
-    ])
-    const [input, setInput] = useState('')
-    const [isLoading, setIsLoading] = useState(false)
-    const [conversationId, setConversationId] = useState<string>()
-    const messagesEndRef = useRef<HTMLDivElement>(null)
+    ]);
+    const [input, setInput] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const [conversationId, setConversationId] = useState<string>();
+    const messagesEndRef = useRef<HTMLDivElement>(null);
 
     const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-    }
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
 
     useEffect(() => {
-        scrollToBottom()
-    }, [messages])
+        scrollToBottom();
+    }, [messages]);
 
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
-        if (!input.trim() || isLoading) return
+        e.preventDefault();
+        if (!input.trim() || isLoading) return;
 
-        const userMessage = input.trim()
-        setInput('')
-        setMessages((prev) => [...prev, { role: 'user', content: userMessage }])
-        setIsLoading(true)
+        const userMessage = input.trim();
+        setInput("");
+        setMessages((prev) => [...prev, { role: "user", content: userMessage }]);
+        setIsLoading(true);
 
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.edycu.dev'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.edycu.dev";
             const res = await fetch(`${apiUrl}/api/chat`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ message: userMessage, conversationId }),
-            })
+            });
 
-            const json = await res.json()
+            const json = await res.json();
 
             if (json.success && json.data) {
                 setMessages((prev) => [
                     ...prev,
-                    { role: 'assistant', content: json.data.response },
-                ])
-                setConversationId(json.data.conversationId)
+                    { role: "assistant", content: json.data.response },
+                ]);
+                setConversationId(json.data.conversationId);
             } else {
-                throw new Error('Invalid response')
+                throw new Error("Invalid response");
             }
         } catch {
             setMessages((prev) => [
                 ...prev,
                 {
-                    role: 'assistant',
+                    role: "assistant",
                     content: "Sorry, I'm having trouble connecting. Please try again later.",
                 },
-            ])
+            ]);
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
-    }
+    };
 
     const suggestedQuestions = [
-        'What are your main skills?',
-        'Tell me about your projects',
-        'What experience do you have with Go?',
-    ]
+        "What are your main skills?",
+        "Tell me about your projects",
+        "What's your experience with AI/ML?",
+    ];
 
     return (
         <>
-            {/* Chat button */}
-            <button
+            {/* Floating chat button */}
+            <Button
                 onClick={() => setIsOpen(!isOpen)}
-                className="fixed bottom-6 right-6 md:bottom-6 w-14 h-14 bg-gradient-to-r from-primary-500 to-accent-500 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform z-50"
-                aria-label="Open chat"
+                variant="primary"
+                size="l"
+                style={{
+                    position: "fixed",
+                    bottom: "24px",
+                    right: "24px",
+                    width: "56px",
+                    height: "56px",
+                    borderRadius: "50%",
+                    zIndex: 1000,
+                    boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+                }}
             >
                 {isOpen ? (
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 ) : (
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
                     </svg>
                 )}
-            </button>
+            </Button>
 
             {/* Chat window */}
             {isOpen && (
-                <div className="fixed bottom-24 right-6 w-96 max-w-[calc(100vw-48px)] h-[500px] glass-card flex flex-col z-50">
+                <Column
+                    radius="l"
+                    border="neutral-alpha-weak"
+                    background="surface"
+                    style={{
+                        position: "fixed",
+                        bottom: "96px",
+                        right: "24px",
+                        width: "380px",
+                        maxWidth: "calc(100vw - 48px)",
+                        height: "500px",
+                        zIndex: 1000,
+                        boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+                        overflow: "hidden",
+                    }}
+                >
                     {/* Header */}
-                    <div className="p-4 border-b border-white/10">
-                        <h3 className="font-bold">AI Assistant</h3>
-                        <p className="text-sm text-gray-400">Ask me anything about this developer</p>
-                    </div>
+                    <Flex
+                        paddingX="m"
+                        paddingY="s"
+                        borderBottom="neutral-alpha-weak"
+                        background="neutral-weak"
+                    >
+                        <Column gap="2">
+                            <Heading as="h3" variant="heading-strong-s">
+                                AI Assistant
+                            </Heading>
+                            <Text variant="body-default-xs" onBackground="neutral-weak">
+                                Ask me anything about Edy
+                            </Text>
+                        </Column>
+                    </Flex>
 
                     {/* Messages */}
-                    <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                    <Column
+                        flex={1}
+                        gap="s"
+                        padding="m"
+                        style={{ overflowY: "auto" }}
+                    >
                         {messages.map((msg, i) => (
-                            <div
+                            <Flex
                                 key={i}
-                                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                                justifyContent={msg.role === "user" ? "flex-end" : "flex-start"}
                             >
-                                <div
-                                    className={`max-w-[80%] px-4 py-2 rounded-2xl ${msg.role === 'user'
-                                        ? 'bg-gradient-to-r from-primary-500 to-accent-500'
-                                        : 'bg-white/10'
-                                        }`}
+                                <Flex
+                                    paddingX="m"
+                                    paddingY="s"
+                                    radius="l"
+                                    background={msg.role === "user" ? "brand-strong" : "neutral-weak"}
+                                    style={{ maxWidth: "85%" }}
                                 >
-                                    {msg.content}
-                                </div>
-                            </div>
+                                    <Text
+                                        variant="body-default-s"
+                                        onBackground={msg.role === "user" ? "brand-strong" : "neutral-strong"}
+                                    >
+                                        {msg.content}
+                                    </Text>
+                                </Flex>
+                            </Flex>
                         ))}
                         {isLoading && (
-                            <div className="flex justify-start">
-                                <div className="bg-white/10 px-4 py-2 rounded-2xl">
-                                    <span className="animate-pulse">Thinking...</span>
-                                </div>
-                            </div>
+                            <Flex justifyContent="flex-start">
+                                <Flex paddingX="m" paddingY="s" radius="l" background="neutral-weak">
+                                    <Text variant="body-default-s" onBackground="neutral-weak">
+                                        Thinking...
+                                    </Text>
+                                </Flex>
+                            </Flex>
                         )}
                         <div ref={messagesEndRef} />
-                    </div>
+                    </Column>
 
-                    {/* Suggested questions */}
+                    {/* Suggested questions (only on first message) */}
                     {messages.length === 1 && (
-                        <div className="px-4 pb-2 flex flex-wrap gap-2">
+                        <Flex paddingX="m" paddingBottom="s" gap="8" wrap>
                             {suggestedQuestions.map((q) => (
-                                <button
+                                <Button
                                     key={q}
+                                    variant="tertiary"
+                                    size="s"
                                     onClick={() => setInput(q)}
-                                    className="text-xs px-3 py-1 bg-white/5 rounded-full hover:bg-white/10 transition-colors"
                                 >
                                     {q}
-                                </button>
+                                </Button>
                             ))}
-                        </div>
+                        </Flex>
                     )}
 
                     {/* Input */}
-                    <form onSubmit={handleSubmit} className="p-4 border-t border-white/10">
-                        <div className="flex gap-2">
-                            <input
-                                type="text"
+                    <form onSubmit={handleSubmit}>
+                        <Flex
+                            paddingX="m"
+                            paddingY="s"
+                            gap="8"
+                            borderTop="neutral-alpha-weak"
+                            alignItems="center"
+                        >
+                            <Input
+                                id="chat-input"
+                                label=""
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                                 placeholder="Ask a question..."
-                                className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-full focus:outline-none focus:border-primary-500"
+                                style={{ flex: 1 }}
                             />
-                            <button
+                            <Button
                                 type="submit"
-                                disabled={isLoading}
-                                className="px-4 py-2 bg-gradient-to-r from-primary-500 to-accent-500 rounded-full disabled:opacity-50"
+                                variant="primary"
+                                size="m"
+                                disabled={isLoading || !input.trim()}
                             >
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M12 19V5M5 12l7-7 7 7" />
                                 </svg>
-                            </button>
-                        </div>
+                            </Button>
+                        </Flex>
                     </form>
-                </div>
+                </Column>
             )}
         </>
-    )
+    );
 }

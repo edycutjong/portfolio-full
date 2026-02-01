@@ -1,136 +1,171 @@
-import type { Metadata, Viewport } from 'next'
-import './globals.css'
-import { ThemeProvider } from '@/components/ThemeProvider'
-import { Analytics } from '@vercel/analytics/next'
-import { SpeedInsights } from '@vercel/speed-insights/next'
+import "@once-ui-system/core/css/styles.css";
+import "@once-ui-system/core/css/tokens.css";
+import "@/resources/custom.css";
 
-const siteUrl = 'https://edycu.dev'
+import classNames from "classnames";
 
-export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
-  title: {
-    default: 'Edy Cu | Full-Stack Developer',
-    template: '%s | Edy Cu',
-  },
-  description:
-    'Full-Stack Developer specializing in AI/ML, TypeScript, Go, Python, and cloud-native applications. Building high-performance systems and beautiful user experiences.',
-  keywords: [
-    'Edy Cu',
-    'Full-Stack Developer',
-    'Software Engineer',
-    'AI Engineer',
-    'TypeScript',
-    'Go',
-    'Python',
-    'Rust',
-    'Next.js',
-    'React',
-    'Remote Developer',
-    'Cloud Architecture',
-    'Machine Learning',
-  ],
-  authors: [{ name: 'Edy Cu', url: siteUrl }],
-  creator: 'Edy Cu',
-  publisher: 'Edy Cu',
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
-  },
-  openGraph: {
-    type: 'website',
-    locale: 'en_US',
-    url: siteUrl,
-    siteName: 'Edy Cu - Portfolio',
-    title: 'Edy Cu | Full-Stack Developer',
-    description: 'AI-powered developer portfolio with interactive chatbot. Expertise in TypeScript, Go, Python, and modern cloud architecture.',
-    images: [
-      {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
-        alt: 'Edy Cu - Full-Stack Developer Portfolio',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Edy Cu | Full-Stack Developer',
-    description: 'AI-powered developer portfolio. Building high-performance systems with TypeScript, Go, Python.',
-    site: '@edycutjong',
-    creator: '@edycutjong',
-    images: ['/og-image.png'],
-  },
-  icons: {
-    icon: '/icon.png',
-    shortcut: '/icon.png',
-    apple: '/icon.png',
-  },
-  manifest: '/site.webmanifest',
-  alternates: {
-    canonical: siteUrl,
-  },
+import {
+  Background,
+  Column,
+  Flex,
+  Meta,
+  opacity,
+  RevealFx,
+  SpacingToken,
+} from "@once-ui-system/core";
+import { Footer, Header, RouteGuard, Providers, ChatBot } from "@/components";
+import { baseURL, effects, fonts, style, dataStyle, home } from "@/resources";
+
+export async function generateMetadata() {
+  return Meta.generate({
+    title: home.title,
+    description: home.description,
+    baseURL: baseURL,
+    path: home.path,
+    image: home.image,
+  });
 }
 
-export const viewport: Viewport = {
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#fafafa' },
-    { media: '(prefers-color-scheme: dark)', color: '#0f0f0f' },
-  ],
-  width: 'device-width',
-  initialScale: 1,
-  maximumScale: 5,
-}
-
-// JSON-LD Structured Data
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Person',
-  name: 'Edy Cu',
-  url: siteUrl,
-  jobTitle: 'Full-Stack Developer',
-  description: 'Full-Stack Developer specializing in AI/ML, high-performance systems, and cloud-native applications.',
-  sameAs: [
-    'https://github.com/edycutjong',
-    'https://linkedin.com/in/edy-cu-tjong',
-    'https://x.com/edycutjong',
-  ],
-  knowsAbout: [
-    'TypeScript',
-    'Python',
-    'Go',
-    'Rust',
-    'React',
-    'Next.js',
-    'Machine Learning',
-    'Cloud Architecture',
-  ],
-}
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <Flex
+      suppressHydrationWarning
+      as="html"
+      lang="en"
+      fillWidth
+      className={classNames(
+        fonts.heading.variable,
+        fonts.body.variable,
+        fonts.label.variable,
+        fonts.code.variable,
+      )}
+    >
       <head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
         <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          id="theme-init"
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  const root = document.documentElement;
+                  const defaultTheme = 'system';
+                  
+                  // Set defaults from config
+                  const config = ${JSON.stringify({
+              brand: style.brand,
+              accent: style.accent,
+              neutral: style.neutral,
+              solid: style.solid,
+              "solid-style": style.solidStyle,
+              border: style.border,
+              surface: style.surface,
+              transition: style.transition,
+              scaling: style.scaling,
+              "viz-style": dataStyle.variant,
+            })};
+                  
+                  // Apply default values
+                  Object.entries(config).forEach(([key, value]) => {
+                    root.setAttribute('data-' + key, value);
+                  });
+                  
+                  // Resolve theme
+                  const resolveTheme = (themeValue) => {
+                    if (!themeValue || themeValue === 'system') {
+                      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                    }
+                    return themeValue;
+                  };
+                  
+                  // Apply saved theme
+                  const savedTheme = localStorage.getItem('data-theme');
+                  const resolvedTheme = resolveTheme(savedTheme);
+                  root.setAttribute('data-theme', resolvedTheme);
+                  
+                  // Apply any saved style overrides
+                  const styleKeys = Object.keys(config);
+                  styleKeys.forEach(key => {
+                    const value = localStorage.getItem('data-' + key);
+                    if (value) {
+                      root.setAttribute('data-' + key, value);
+                    }
+                  });
+                } catch (e) {
+                  console.error('Failed to initialize theme:', e);
+                  document.documentElement.setAttribute('data-theme', 'dark');
+                }
+              })();
+            `,
+          }}
         />
       </head>
-      <body className="gradient-bg min-h-screen">
-        <ThemeProvider>{children}</ThemeProvider>
-        <Analytics />
-        <SpeedInsights />
-      </body>
-    </html>
-  )
+      <Providers>
+        <Column
+          as="body"
+          background="page"
+          fillWidth
+          style={{ minHeight: "100vh" }}
+          margin="0"
+          padding="0"
+          horizontal="center"
+        >
+          <RevealFx fill position="absolute">
+            <Background
+              mask={{
+                x: effects.mask.x,
+                y: effects.mask.y,
+                radius: effects.mask.radius,
+                cursor: effects.mask.cursor,
+              }}
+              gradient={{
+                display: effects.gradient.display,
+                opacity: effects.gradient.opacity as opacity,
+                x: effects.gradient.x,
+                y: effects.gradient.y,
+                width: effects.gradient.width,
+                height: effects.gradient.height,
+                tilt: effects.gradient.tilt,
+                colorStart: effects.gradient.colorStart,
+                colorEnd: effects.gradient.colorEnd,
+              }}
+              dots={{
+                display: effects.dots.display,
+                opacity: effects.dots.opacity as opacity,
+                size: effects.dots.size as SpacingToken,
+                color: effects.dots.color,
+              }}
+              grid={{
+                display: effects.grid.display,
+                opacity: effects.grid.opacity as opacity,
+                color: effects.grid.color,
+                width: effects.grid.width,
+                height: effects.grid.height,
+              }}
+              lines={{
+                display: effects.lines.display,
+                opacity: effects.lines.opacity as opacity,
+                size: effects.lines.size as SpacingToken,
+                thickness: effects.lines.thickness,
+                angle: effects.lines.angle,
+                color: effects.lines.color,
+              }}
+            />
+          </RevealFx>
+          <Flex fillWidth minHeight="16" s={{ hide: true }} />
+          <Header />
+          <Flex zIndex={0} fillWidth padding="l" horizontal="center" flex={1}>
+            <Flex horizontal="center" fillWidth minHeight="0">
+              <RouteGuard>{children}</RouteGuard>
+            </Flex>
+          </Flex>
+          <Footer />
+          <ChatBot />
+        </Column>
+      </Providers>
+    </Flex>
+  );
 }

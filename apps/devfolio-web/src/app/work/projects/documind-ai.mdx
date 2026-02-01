@@ -1,0 +1,42 @@
+---
+title: "DocuMind AI"
+publishedAt: "2025-01-15"
+summary: "Intelligent Document Q&A platform built with RAG architecture using LangChain and Pinecone for semantic search."
+images:
+  - "/images/projects/documind/cover.jpg"
+team:
+  - name: "Edy Cu"
+    role: "Full-Stack Engineer"
+    avatar: "/images/avatar.jpg"
+    linkedIn: "https://linkedin.com/in/edy-cu-tjong"
+link: "https://documind.edycu.dev"
+---
+
+## Overview
+
+DocuMind AI enables users to upload documents, ask questions, and receive cited answers. Built with a Retrieval-Augmented Generation (RAG) architecture, it combines the power of LLMs with vector-based semantic search for accurate, contextual responses.
+
+## Key Features
+
+- **Document Processing**: Upload PDFs, Word docs, and text files. Documents are chunked and embedded for efficient retrieval.
+- **Semantic Search**: Pinecone vector database stores embeddings for fast similarity search across your document corpus.
+- **RAG Architecture**: LangChain orchestrates the retrieval and generation pipeline, ensuring answers are grounded in your documents.
+- **Citation Support**: Every answer includes references to the source documents and specific passages.
+
+## Technologies Used
+
+- **Python & FastAPI**: High-performance async API backend
+- **LangChain**: RAG orchestration and prompt engineering
+- **OpenAI**: GPT-4 for generation, Ada for embeddings
+- **Pinecone**: Vector database for semantic search
+- **Redis**: Caching layer for frequently accessed queries
+
+## Architecture
+
+The system follows a clean separation of concerns:
+1. **Ingestion Pipeline**: Documents → Chunking → Embedding → Vector Store
+2. **Query Pipeline**: Question → Semantic Search → Context Assembly → LLM Generation → Response
+
+## Outcome
+
+DocuMind AI demonstrates production-ready AI infrastructure, handling complex document corpora while maintaining sub-second query response times.
