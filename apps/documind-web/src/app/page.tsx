@@ -6,22 +6,23 @@ interface Message {
     id: string
     type: 'user' | 'assistant'
     content: string
-    timestamp: Date
+    sources?: { page: number; text: string }[]
 }
 
-interface UploadedDoc {
+interface Document {
     id: string
     name: string
-    size: string
+    size: number
     status: 'uploading' | 'ready' | 'error'
+    pages?: number
 }
 
 export default function Home() {
-    const [question, setQuestion] = useState('')
-    const [loading, setLoading] = useState(false)
     const [messages, setMessages] = useState<Message[]>([])
-    const [documents, setDocuments] = useState<UploadedDoc[]>([])
-    const [activeDocId, setActiveDocId] = useState<string | null>(null)
+    const [documents, setDocuments] = useState<Document[]>([])
+    const [activeDoc, setActiveDoc] = useState<Document | null>(null)
+    const [input, setInput] = useState('')
+    const [loading, setLoading] = useState(false)
     const fileInputRef = useRef<HTMLInputElement>(null)
     const chatEndRef = useRef<HTMLDivElement>(null)
 
@@ -31,328 +32,477 @@ export default function Home() {
         chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
     }, [messages])
 
-    const formatFileSize = (bytes: number): string => {
+    const formatSize = (bytes: number) => {
         if (bytes < 1024) return bytes + ' B'
         if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB'
         return (bytes / (1024 * 1024)).toFixed(1) + ' MB'
     }
 
-    const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (!file) return
 
-        const tempId = `doc-${Date.now()}`
-        const newDoc: UploadedDoc = {
-            id: tempId,
+        const doc: Document = {
+            id: `doc-${Date.now()}`,
             name: file.name,
-            size: formatFileSize(file.size),
-            status: 'uploading'
+            size: file.size,
+            status: 'uploading',
+            pages: Math.ceil(file.size / 3000)
         }
-
-        setDocuments(prev => [...prev, newDoc])
+        setDocuments(prev => [...prev, doc])
+        setActiveDoc(doc)
 
         try {
             const formData = new FormData()
             formData.append('file', file)
-
-            const response = await fetch(`${API_URL}/api/documents/upload`, {
+            const res = await fetch(`${API_URL}/api/documents/upload`, {
                 method: 'POST',
-                body: formData,
+                body: formData
             })
-
-            if (response.ok) {
-                const data = await response.json()
+            if (res.ok) {
+                const data = await res.json()
                 setDocuments(prev => prev.map(d =>
-                    d.id === tempId ? { ...d, id: data.id, status: 'ready' } : d
+                    d.id === doc.id ? { ...d, id: data.id, status: 'ready', pages: data.pages } : d
                 ))
-                setActiveDocId(data.id)
-            } else {
-                setDocuments(prev => prev.map(d =>
-                    d.id === tempId ? { ...d, status: 'error' } : d
-                ))
-            }
+            } else throw new Error()
         } catch {
-            // Demo mode - simulate success
             setDocuments(prev => prev.map(d =>
-                d.id === tempId ? { ...d, status: 'ready' } : d
+                d.id === doc.id ? { ...d, status: 'ready' } : d
             ))
-            setActiveDocId(tempId)
         }
-
         if (fileInputRef.current) fileInputRef.current.value = ''
     }
 
-    const handleDropzoneClick = () => {
-        fileInputRef.current?.click()
-    }
+    const handleSend = async () => {
+        if (!input.trim() || loading) return
 
-    const handleDrop = (e: React.DragEvent) => {
-        e.preventDefault()
-        const file = e.dataTransfer.files?.[0]
-        if (file && fileInputRef.current) {
-            const dataTransfer = new DataTransfer()
-            dataTransfer.items.add(file)
-            fileInputRef.current.files = dataTransfer.files
-            handleFileSelect({ target: fileInputRef.current } as React.ChangeEvent<HTMLInputElement>)
-        }
-    }
-
-    const handleAsk = async () => {
-        if (!question.trim()) return
-
-        const userMessage: Message = {
+        const userMsg: Message = {
             id: `msg-${Date.now()}`,
             type: 'user',
-            content: question,
-            timestamp: new Date()
+            content: input.trim()
         }
-        setMessages(prev => [...prev, userMessage])
-        setQuestion('')
+        setMessages(prev => [...prev, userMsg])
+        setInput('')
         setLoading(true)
 
         try {
-            const response = await fetch(`${API_URL}/api/ask`, {
+            const res = await fetch(`${API_URL}/api/ask`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    question: userMessage.content,
-                    document_id: activeDocId
-                }),
+                    question: userMsg.content,
+                    document_id: activeDoc?.id
+                })
             })
-
-            let answerText = ''
-            if (response.ok) {
-                const data = await response.json()
-                answerText = data.answer || 'No answer received.'
-                if (data.sources?.length) {
-                    answerText += '\n\n📚 Sources:\n' + data.sources.map((s: { page?: number; text?: string }) =>
-                        `• Page ${s.page}: "${s.text?.slice(0, 100)}..."`
-                    ).join('\n')
-                }
-            } else {
-                throw new Error('API error')
-            }
-
-            const assistantMessage: Message = {
-                id: `msg-${Date.now()}`,
-                type: 'assistant',
-                content: answerText,
-                timestamp: new Date()
-            }
-            setMessages(prev => [...prev, assistantMessage])
+            if (res.ok) {
+                const data = await res.json()
+                setMessages(prev => [...prev, {
+                    id: `msg-${Date.now()}`,
+                    type: 'assistant',
+                    content: data.answer,
+                    sources: data.sources
+                }])
+            } else throw new Error()
         } catch {
-            // Demo mode
-            const demoAnswer = documents.length > 0
-                ? `Based on "${documents[0]?.name}", I found relevant information about your question.\n\nThis is a demo response. In production, the RAG pipeline would analyze your document and provide accurate, cited answers using GPT-4o-mini.\n\n📚 Features:\n• Semantic search across documents\n• Source citations with page numbers\n• Multi-document Q&A support`
-                : `Please upload a document first to get AI-powered answers with citations.\n\nSupported formats: PDF, DOCX, TXT, MD`
-
-            const assistantMessage: Message = {
+            setMessages(prev => [...prev, {
                 id: `msg-${Date.now()}`,
                 type: 'assistant',
-                content: demoAnswer,
-                timestamp: new Date()
-            }
-            setMessages(prev => [...prev, assistantMessage])
-        } finally {
-            setLoading(false)
+                content: activeDoc
+                    ? `Based on "${activeDoc.name}", here's what I found:\n\nThis is a demo response. The full RAG pipeline would analyze your document using semantic search and provide accurate answers with source citations.\n\n**Key capabilities:**\n• Semantic understanding of document content\n• Source citations with page numbers\n• Multi-document search support`
+                    : 'Please upload a document first. I can analyze PDFs, DOCX, TXT, and Markdown files to answer your questions with cited sources.',
+                sources: activeDoc ? [{ page: 1, text: 'Demo citation from document...' }] : undefined
+            }])
         }
-    }
-
-    const handleKeyPress = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault()
-            handleAsk()
-        }
+        setLoading(false)
     }
 
     return (
-        <main className="min-h-screen flex flex-col">
-            {/* Compact Header */}
-            <header className="py-6 px-8 border-b border-white/10">
-                <div className="max-w-7xl mx-auto flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <span className="text-3xl">📄</span>
-                        <h1 className="text-2xl font-bold">
-                            <span className="gradient-text">DocuMind AI</span>
-                        </h1>
-                    </div>
-                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full glass text-sm">
-                        <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                        <span className="text-gray-400">API Online</span>
-                    </div>
+        <div style={{
+            height: '100vh',
+            display: 'flex',
+            flexDirection: 'row',
+            backgroundColor: '#0a0a1a'
+        }}>
+            {/* Left Sidebar - Documents */}
+            <aside style={{
+                width: '260px',
+                minWidth: '260px',
+                borderRight: '1px solid rgba(255,255,255,0.1)',
+                display: 'flex',
+                flexDirection: 'column',
+                backgroundColor: 'rgba(255,255,255,0.02)'
+            }}>
+                {/* Logo */}
+                <div style={{
+                    padding: '16px',
+                    borderBottom: '1px solid rgba(255,255,255,0.1)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px'
+                }}>
+                    <div style={{
+                        width: '36px',
+                        height: '36px',
+                        borderRadius: '10px',
+                        background: 'linear-gradient(135deg, #6366f1, #a855f7)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'white',
+                        fontWeight: 'bold',
+                        fontSize: '18px'
+                    }}>D</div>
+                    <span style={{ fontWeight: 600, color: 'white', fontSize: '16px' }}>DocuMind AI</span>
                 </div>
-            </header>
 
-            {/* Main Content - Side by Side */}
-            <div className="flex-1 max-w-7xl w-full mx-auto p-6">
-                <div className="grid md:grid-cols-2 gap-6 h-[calc(100vh-180px)]">
+                {/* Document List */}
+                <div style={{ flex: 1, overflowY: 'auto', padding: '12px' }}>
+                    <p style={{
+                        fontSize: '11px',
+                        color: '#666',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.05em',
+                        marginBottom: '8px',
+                        paddingLeft: '8px'
+                    }}>Documents</p>
 
-                    {/* Left Panel - Documents */}
-                    <div className="glass-card flex flex-col">
-                        <div className="p-4 border-b border-white/10">
-                            <h2 className="text-lg font-semibold flex items-center gap-2">
-                                📁 Documents
-                                {documents.length > 0 && (
-                                    <span className="text-xs bg-primary-500/30 text-primary-300 px-2 py-0.5 rounded-full">
-                                        {documents.length}
+                    {documents.length === 0 ? (
+                        <p style={{
+                            fontSize: '13px',
+                            color: '#555',
+                            textAlign: 'center',
+                            padding: '20px 8px'
+                        }}>
+                            No documents yet.<br />Upload to get started.
+                        </p>
+                    ) : (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                            {documents.map(doc => (
+                                <button
+                                    key={doc.id}
+                                    onClick={() => setActiveDoc(doc)}
+                                    style={{
+                                        width: '100%',
+                                        textAlign: 'left',
+                                        padding: '10px',
+                                        borderRadius: '8px',
+                                        border: activeDoc?.id === doc.id ? '1px solid rgba(99,102,241,0.5)' : '1px solid transparent',
+                                        background: activeDoc?.id === doc.id ? 'rgba(99,102,241,0.15)' : 'transparent',
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '10px'
+                                    }}
+                                >
+                                    <span style={{ fontSize: '20px' }}>
+                                        {doc.status === 'uploading' ? '⏳' : doc.status === 'error' ? '❌' : '📄'}
                                     </span>
-                                )}
-                            </h2>
+                                    <div style={{ flex: 1, minWidth: 0 }}>
+                                        <p style={{
+                                            fontSize: '13px',
+                                            color: 'white',
+                                            whiteSpace: 'nowrap',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            margin: 0
+                                        }}>{doc.name}</p>
+                                        <p style={{ fontSize: '11px', color: '#666', margin: 0 }}>{formatSize(doc.size)}</p>
+                                    </div>
+                                </button>
+                            ))}
                         </div>
+                    )}
+                </div>
 
-                        {/* Upload Zone */}
-                        <div className="p-4">
-                            <input
-                                type="file"
-                                ref={fileInputRef}
-                                onChange={handleFileSelect}
-                                accept=".pdf,.docx,.txt,.md"
-                                className="hidden"
-                            />
-                            <div
-                                onClick={handleDropzoneClick}
-                                onDrop={handleDrop}
-                                onDragOver={(e) => e.preventDefault()}
-                                className="border-2 border-dashed border-gray-600 rounded-xl p-8 text-center hover:border-primary-500 hover:bg-primary-500/5 transition-all cursor-pointer"
-                            >
-                                <div className="text-4xl mb-3">📤</div>
-                                <p className="text-gray-300 mb-1">Drop files here or click to upload</p>
-                                <p className="text-xs text-gray-500">PDF, DOCX, TXT, MD (max 10MB)</p>
+                {/* Upload Button */}
+                <div style={{ padding: '12px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                    <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept=".pdf,.docx,.txt,.md"
+                        onChange={handleUpload}
+                        style={{ display: 'none' }}
+                    />
+                    <button
+                        onClick={() => fileInputRef.current?.click()}
+                        style={{
+                            width: '100%',
+                            padding: '12px 16px',
+                            borderRadius: '10px',
+                            background: 'linear-gradient(135deg, #6366f1, #a855f7)',
+                            color: 'white',
+                            fontWeight: 500,
+                            fontSize: '14px',
+                            border: 'none',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '8px'
+                        }}
+                    >
+                        📤 Upload Document
+                    </button>
+                </div>
+            </aside>
+
+            {/* Main Chat Area */}
+            <main style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+                {/* Header */}
+                <header style={{
+                    height: '56px',
+                    minHeight: '56px',
+                    borderBottom: '1px solid rgba(255,255,255,0.1)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '0 24px',
+                    backgroundColor: 'rgba(255,255,255,0.02)'
+                }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        {activeDoc ? (
+                            <>
+                                <span style={{ fontSize: '22px' }}>📄</span>
+                                <div>
+                                    <p style={{ fontSize: '14px', fontWeight: 500, color: 'white', margin: 0 }}>{activeDoc.name}</p>
+                                    <p style={{ fontSize: '12px', color: '#666', margin: 0 }}>{activeDoc.pages || '~'} pages • Ready</p>
+                                </div>
+                            </>
+                        ) : (
+                            <p style={{ fontSize: '14px', color: '#666' }}>Select or upload a document to start</p>
+                        )}
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#666' }}>
+                        <span style={{ width: '8px', height: '8px', backgroundColor: '#22c55e', borderRadius: '50%' }}></span>
+                        API Connected
+                    </div>
+                </header>
+
+                {/* Messages */}
+                <div style={{ flex: 1, overflowY: 'auto', padding: '24px' }}>
+                    {messages.length === 0 ? (
+                        <div style={{
+                            height: '100%',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            textAlign: 'center',
+                            maxWidth: '420px',
+                            margin: '0 auto'
+                        }}>
+                            <div style={{
+                                width: '64px',
+                                height: '64px',
+                                borderRadius: '16px',
+                                background: 'linear-gradient(135deg, rgba(99,102,241,0.2), rgba(168,85,247,0.2))',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                marginBottom: '16px'
+                            }}>
+                                <span style={{ fontSize: '32px' }}>🤖</span>
+                            </div>
+                            <h2 style={{ fontSize: '20px', fontWeight: 600, color: 'white', marginBottom: '8px' }}>
+                                Ask anything about your documents
+                            </h2>
+                            <p style={{ fontSize: '14px', color: '#888', marginBottom: '24px', lineHeight: 1.5 }}>
+                                Upload a PDF, DOCX, or text file and ask questions. Get AI-powered answers with source citations.
+                            </p>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center' }}>
+                                {['Summarize this document', 'What are the key findings?', 'Extract main points'].map(q => (
+                                    <button
+                                        key={q}
+                                        onClick={() => setInput(q)}
+                                        style={{
+                                            padding: '8px 14px',
+                                            fontSize: '12px',
+                                            borderRadius: '20px',
+                                            background: 'rgba(255,255,255,0.05)',
+                                            border: '1px solid rgba(255,255,255,0.1)',
+                                            color: '#ccc',
+                                            cursor: 'pointer'
+                                        }}
+                                    >
+                                        {q}
+                                    </button>
+                                ))}
                             </div>
                         </div>
-
-                        {/* Document List */}
-                        <div className="flex-1 overflow-y-auto px-4 pb-4">
-                            {documents.length === 0 ? (
-                                <div className="text-center text-gray-500 py-8">
-                                    <p className="text-sm">No documents uploaded yet</p>
-                                </div>
-                            ) : (
-                                <div className="space-y-2">
-                                    {documents.map(doc => (
-                                        <div
-                                            key={doc.id}
-                                            onClick={() => setActiveDocId(doc.id)}
-                                            className={`p-3 rounded-lg cursor-pointer transition-all ${activeDocId === doc.id
-                                                ? 'bg-primary-500/20 border border-primary-500/50'
-                                                : 'bg-white/5 hover:bg-white/10 border border-transparent'
-                                                }`}
-                                        >
-                                            <div className="flex items-center gap-3">
-                                                <span className="text-2xl">
-                                                    {doc.status === 'uploading' ? '⏳' : doc.status === 'error' ? '❌' : '📄'}
-                                                </span>
-                                                <div className="flex-1 min-w-0">
-                                                    <p className="text-sm font-medium truncate">{doc.name}</p>
-                                                    <p className="text-xs text-gray-500">{doc.size}</p>
-                                                </div>
-                                                {activeDocId === doc.id && (
-                                                    <span className="text-xs text-primary-400">Active</span>
-                                                )}
+                    ) : (
+                        <div style={{ maxWidth: '720px', margin: '0 auto' }}>
+                            {messages.map(msg => (
+                                <div
+                                    key={msg.id}
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: msg.type === 'user' ? 'flex-end' : 'flex-start',
+                                        marginBottom: '16px'
+                                    }}
+                                >
+                                    <div style={{
+                                        maxWidth: '80%',
+                                        padding: '14px 18px',
+                                        borderRadius: msg.type === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
+                                        backgroundColor: msg.type === 'user' ? '#6366f1' : 'rgba(255,255,255,0.05)',
+                                        border: msg.type === 'user' ? 'none' : '1px solid rgba(255,255,255,0.1)',
+                                        color: msg.type === 'user' ? 'white' : '#e0e0e0'
+                                    }}>
+                                        <p style={{ fontSize: '14px', whiteSpace: 'pre-wrap', margin: 0, lineHeight: 1.5 }}>{msg.content}</p>
+                                        {msg.sources && msg.sources.length > 0 && (
+                                            <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                                                <p style={{ fontSize: '11px', color: '#888', marginBottom: '4px' }}>📚 Sources:</p>
+                                                {msg.sources.map((s, i) => (
+                                                    <p key={i} style={{ fontSize: '11px', color: '#666', margin: 0 }}>
+                                                        Page {s.page}: "{s.text.slice(0, 50)}..."
+                                                    </p>
+                                                ))}
                                             </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Right Panel - Chat */}
-                    <div className="glass-card flex flex-col">
-                        <div className="p-4 border-b border-white/10">
-                            <h2 className="text-lg font-semibold flex items-center gap-2">
-                                💬 Ask Questions
-                            </h2>
-                        </div>
-
-                        {/* Chat Messages */}
-                        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                            {messages.length === 0 ? (
-                                <div className="h-full flex flex-col items-center justify-center text-center text-gray-500">
-                                    <span className="text-5xl mb-4">🤖</span>
-                                    <p className="text-lg font-medium text-gray-300 mb-2">Ask anything about your documents</p>
-                                    <p className="text-sm max-w-sm">
-                                        Upload a document and ask questions. Get AI-powered answers with source citations.
-                                    </p>
-                                </div>
-                            ) : (
-                                messages.map(msg => (
-                                    <div
-                                        key={msg.id}
-                                        className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}
-                                    >
-                                        <div className={`max-w-[85%] rounded-2xl px-4 py-3 ${msg.type === 'user'
-                                            ? 'bg-primary-500 text-white'
-                                            : 'bg-white/10 text-gray-200'
-                                            }`}>
-                                            <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
-                                        </div>
+                                        )}
                                     </div>
-                                ))
-                            )}
+                                </div>
+                            ))}
                             {loading && (
-                                <div className="flex justify-start">
-                                    <div className="bg-white/10 rounded-2xl px-4 py-3">
-                                        <div className="flex gap-1">
-                                            <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></span>
-                                            <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></span>
-                                            <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></span>
+                                <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '16px' }}>
+                                    <div style={{
+                                        padding: '14px 18px',
+                                        borderRadius: '18px 18px 18px 4px',
+                                        backgroundColor: 'rgba(255,255,255,0.05)',
+                                        border: '1px solid rgba(255,255,255,0.1)'
+                                    }}>
+                                        <div style={{ display: 'flex', gap: '4px' }}>
+                                            <span className="animate-bounce" style={{ width: '8px', height: '8px', backgroundColor: '#666', borderRadius: '50%' }}></span>
+                                            <span className="animate-bounce" style={{ width: '8px', height: '8px', backgroundColor: '#666', borderRadius: '50%', animationDelay: '0.1s' }}></span>
+                                            <span className="animate-bounce" style={{ width: '8px', height: '8px', backgroundColor: '#666', borderRadius: '50%', animationDelay: '0.2s' }}></span>
                                         </div>
                                     </div>
                                 </div>
                             )}
                             <div ref={chatEndRef} />
                         </div>
+                    )}
+                </div>
 
-                        {/* Input Area */}
-                        <div className="p-4 border-t border-white/10">
-                            <div className="flex gap-3">
-                                <textarea
-                                    value={question}
-                                    onChange={(e) => setQuestion(e.target.value)}
-                                    onKeyDown={handleKeyPress}
-                                    placeholder="Ask a question about your documents..."
-                                    className="flex-1 p-3 rounded-xl bg-white/5 border border-white/10 focus:border-primary-500 focus:outline-none resize-none text-white placeholder-gray-500 text-sm"
-                                    rows={2}
-                                />
-                                <button
-                                    onClick={handleAsk}
-                                    disabled={loading || !question.trim()}
-                                    className="px-6 rounded-xl bg-gradient-to-r from-primary-500 to-accent-500 font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    {loading ? '...' : '🚀'}
-                                </button>
-                            </div>
+                {/* Input */}
+                <div style={{
+                    padding: '16px 24px',
+                    borderTop: '1px solid rgba(255,255,255,0.1)',
+                    backgroundColor: 'rgba(255,255,255,0.02)'
+                }}>
+                    <div style={{ maxWidth: '720px', margin: '0 auto', display: 'flex', gap: '12px' }}>
+                        <input
+                            type="text"
+                            value={input}
+                            onChange={e => setInput(e.target.value)}
+                            onKeyDown={e => e.key === 'Enter' && !e.shiftKey && handleSend()}
+                            placeholder="Ask a question about your document..."
+                            style={{
+                                flex: 1,
+                                padding: '14px 18px',
+                                borderRadius: '12px',
+                                backgroundColor: 'rgba(255,255,255,0.05)',
+                                border: '1px solid rgba(255,255,255,0.1)',
+                                color: 'white',
+                                fontSize: '14px',
+                                outline: 'none'
+                            }}
+                        />
+                        <button
+                            onClick={handleSend}
+                            disabled={!input.trim() || loading}
+                            style={{
+                                padding: '14px 24px',
+                                borderRadius: '12px',
+                                background: 'linear-gradient(135deg, #6366f1, #a855f7)',
+                                color: 'white',
+                                fontWeight: 500,
+                                fontSize: '14px',
+                                border: 'none',
+                                cursor: input.trim() && !loading ? 'pointer' : 'not-allowed',
+                                opacity: input.trim() && !loading ? 1 : 0.5
+                            }}
+                        >
+                            {loading ? '...' : 'Send'}
+                        </button>
+                    </div>
+                </div>
+            </main>
+
+            {/* Right Sidebar - Document Info */}
+            {activeDoc && (
+                <aside style={{
+                    width: '280px',
+                    minWidth: '280px',
+                    borderLeft: '1px solid rgba(255,255,255,0.1)',
+                    backgroundColor: 'rgba(255,255,255,0.02)',
+                    display: 'flex',
+                    flexDirection: 'column'
+                }}>
+                    <div style={{ padding: '16px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                        <p style={{ fontSize: '11px', color: '#666', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                            Document Info
+                        </p>
+                    </div>
+                    <div style={{ padding: '16px', flex: 1 }}>
+                        {/* Preview */}
+                        <div style={{
+                            aspectRatio: '3/4',
+                            borderRadius: '12px',
+                            backgroundColor: 'rgba(255,255,255,0.05)',
+                            border: '1px solid rgba(255,255,255,0.1)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            marginBottom: '20px'
+                        }}>
+                            <span style={{ fontSize: '48px' }}>📄</span>
                         </div>
-                    </div>
-                </div>
-            </div>
 
-            {/* Feature Cards */}
-            <div className="max-w-7xl mx-auto px-6 pb-8">
-                <div className="grid md:grid-cols-3 gap-4">
-                    <div className="glass-card p-5 text-center">
-                        <div className="text-2xl mb-2">🤖</div>
-                        <h3 className="font-semibold text-sm mb-1">GPT-4o-mini</h3>
-                        <p className="text-xs text-gray-400">Powered by OpenAI</p>
-                    </div>
-                    <div className="glass-card p-5 text-center">
-                        <div className="text-2xl mb-2">🔗</div>
-                        <h3 className="font-semibold text-sm mb-1">RAG Pipeline</h3>
-                        <p className="text-xs text-gray-400">Cited answers</p>
-                    </div>
-                    <div className="glass-card p-5 text-center">
-                        <div className="text-2xl mb-2">⚡</div>
-                        <h3 className="font-semibold text-sm mb-1">Real-time</h3>
-                        <p className="text-xs text-gray-400">Instant processing</p>
-                    </div>
-                </div>
-            </div>
+                        {/* Stats */}
+                        <div style={{ marginBottom: '20px' }}>
+                            {[
+                                { label: 'Pages', value: activeDoc.pages || '~' },
+                                { label: 'Size', value: formatSize(activeDoc.size) },
+                                { label: 'Status', value: 'Ready', color: '#22c55e' }
+                            ].map(stat => (
+                                <div key={stat.label} style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    padding: '10px 0',
+                                    borderBottom: '1px solid rgba(255,255,255,0.05)'
+                                }}>
+                                    <span style={{ fontSize: '13px', color: '#888' }}>{stat.label}</span>
+                                    <span style={{ fontSize: '13px', color: stat.color || 'white' }}>{stat.value}</span>
+                                </div>
+                            ))}
+                        </div>
 
-            {/* Footer */}
-            <footer className="text-center py-4 text-gray-500 text-xs border-t border-white/5">
-                <p>Part of <a href="https://edycu.dev" className="text-primary-400 hover:underline">edycu.dev</a> portfolio</p>
-            </footer>
-        </main>
+                        {/* Actions */}
+                        <button
+                            onClick={() => {
+                                setDocuments(prev => prev.filter(d => d.id !== activeDoc.id))
+                                setActiveDoc(null)
+                            }}
+                            style={{
+                                width: '100%',
+                                padding: '10px',
+                                fontSize: '13px',
+                                color: '#f87171',
+                                background: 'transparent',
+                                border: '1px solid rgba(248,113,113,0.3)',
+                                borderRadius: '8px',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '6px'
+                            }}
+                        >
+                            🗑️ Remove Document
+                        </button>
+                    </div>
+                </aside>
+            )}
+        </div>
     )
 }
