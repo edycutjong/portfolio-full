@@ -299,13 +299,13 @@ export default function HomePage() {
                 minWidth: 0
             }}>
                 {/* Messages */}
-                <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 12 }}>
+                <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 12, justifyContent: 'flex-end' }}>
                     {messages.length === 0 ? (
                         <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <p style={{ fontSize: 13, color: '#94a3b8' }}>Ask anything about your documents...</p>
                         </div>
                     ) : (
-                        <>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                             {messages.map(msg => (
                                 <div
                                     key={msg.id}
@@ -357,7 +357,7 @@ export default function HomePage() {
                                 </div>
                             )}
                             <div ref={chatEndRef} />
-                        </>
+                        </div>
                     )}
                 </div>
 
