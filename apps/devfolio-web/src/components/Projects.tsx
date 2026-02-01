@@ -121,8 +121,8 @@ export function Projects() {
                             key={cat.id}
                             onClick={() => setActiveCategory(cat.id)}
                             className={`px-5 py-2.5 rounded-full text-sm font-medium border transition-all ${activeCategory === cat.id
-                                    ? 'bg-white text-zinc-900 border-white'
-                                    : 'bg-transparent text-zinc-400 border-zinc-700 hover:border-zinc-500 hover:text-white'
+                                ? 'bg-white text-zinc-900 border-white'
+                                : 'bg-transparent text-zinc-400 border-zinc-700 hover:border-zinc-500 hover:text-white'
                                 }`}
                         >
                             {cat.label}
@@ -149,10 +149,10 @@ export function Projects() {
                                     {project.description}
                                 </p>
 
-                                {/* Tech stack - as chips per mockup */}
-                                <div className="flex flex-wrap gap-[var(--chip-gap)] mb-6">
+                                {/* Tech stack */}
+                                <div className="flex flex-wrap gap-2 mb-6">
                                     {project.techStack.map((tech) => (
-                                        <span key={tech} className="chip text-xs">
+                                        <span key={tech} className="px-3 py-1.5 text-xs bg-zinc-800/60 border border-zinc-700/50 rounded-md text-zinc-300">
                                             {tech}
                                         </span>
                                     ))}
@@ -204,9 +204,9 @@ export function Projects() {
                                     {project.description}
                                 </p>
 
-                                <div className="flex flex-wrap gap-[var(--chip-gap)] mb-5">
+                                <div className="flex flex-wrap gap-2 mb-5">
                                     {project.techStack.slice(0, 4).map((tech) => (
-                                        <span key={tech} className="chip text-xs">
+                                        <span key={tech} className="px-3 py-1.5 text-xs bg-zinc-800/60 border border-zinc-700/50 rounded-md text-zinc-300">
                                             {tech}
                                         </span>
                                     ))}
