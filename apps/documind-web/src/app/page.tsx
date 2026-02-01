@@ -443,7 +443,7 @@ export default function Home() {
 
                     {/* Summary text */}
                     <p style={{ fontSize: '10px', color: '#94a3b8', lineHeight: 1.6, marginBottom: '10px' }}>
-                        This document covers the company&apos;s financial performance, strategic initiatives, and market outlook for the fiscal year 2023, highlighting growth in revenue and profitability.
+                        This document is the annual report for 2023, providing a comprehensive overview of the company&apos;s financial performance, strategic initiatives, and operational highlights. It includes detailed financial statements, management analysis, and future outlook.
                     </p>
 
                     {/* Key Stats - no background like mockup */}
