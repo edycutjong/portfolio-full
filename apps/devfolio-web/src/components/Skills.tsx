@@ -3,59 +3,48 @@
 const specializations = [
     {
         title: 'Backend & Systems',
-        icon: '⚙️',
+        skills: ['Python', 'Go', 'Rust', 'FastAPI', 'PostgreSQL', 'Redis'],
         color: 'cyan',
-        skills: ['Python', 'Go', 'Rust', 'FastAPI', 'Axum', 'PostgreSQL', 'Redis'],
     },
     {
-        title: 'AI & ML',
-        icon: '🧠',
+        title: 'AI & Machine Learning',
+        skills: ['LangChain', 'OpenAI', 'RAG', 'Pinecone', 'Vector DBs'],
         color: 'violet',
-        skills: ['LangChain', 'OpenAI', 'RAG', 'Pinecone', 'Vector DBs', 'Embeddings'],
     },
     {
         title: 'Frontend & Web',
-        icon: '🌐',
-        color: 'blue',
         skills: ['Next.js', 'React', 'TypeScript', 'Tailwind', 'Vercel'],
+        color: 'blue',
     },
     {
         title: 'DevOps & Cloud',
-        icon: '☁️',
+        skills: ['Docker', 'Kubernetes', 'Terraform', 'AWS', 'GitHub Actions'],
         color: 'green',
-        skills: ['Docker', 'Kubernetes', 'Terraform', 'AWS', 'GitHub Actions', 'Railway'],
     },
 ]
 
 export function Skills() {
     return (
-        <section id="skills" className="section-padding px-6 bg-zinc-900/30">
+        <section id="skills" className="section-padding bg-zinc-900/30">
             <div className="container-wide">
                 {/* Section header */}
-                <div className="text-center mb-10 animate-fade-in">
-                    <h2 className="text-3xl md:text-4xl font-bold mb-3">Technical Expertise</h2>
-                    <p className="text-base text-muted max-w-2xl mx-auto">
-                        Full-stack capabilities across modern tech stacks
+                <div className="mb-12 animate-fade-in">
+                    <h2 className="text-3xl md:text-4xl font-bold mb-4">Skills</h2>
+                    <p className="text-lg text-muted max-w-2xl">
+                        Full-stack capabilities across multiple tech stacks
                     </p>
                 </div>
 
-                {/* Specialization grid */}
-                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 stagger">
+                {/* Skills grid */}
+                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 stagger">
                     {specializations.map((spec) => (
-                        <div key={spec.title} className="card p-5 h-full">
-                            <div className="flex items-center gap-2.5 mb-4">
-                                <span className="text-xl">{spec.icon}</span>
-                                <h3 className="font-semibold text-sm">{spec.title}</h3>
-                            </div>
-                            <div className="flex flex-wrap gap-1.5">
+                        <div key={spec.title} className="card flex flex-col h-full">
+                            <h3 className="font-semibold mb-5 text-[0.9375rem]">{spec.title}</h3>
+                            <div className="flex flex-wrap gap-2">
                                 {spec.skills.map((skill) => (
                                     <span
                                         key={skill}
-                                        className={`chip text-xs ${spec.color === 'cyan' ? 'hover:border-cyan-500 hover:text-cyan-400' :
-                                                spec.color === 'violet' ? 'hover:border-violet-500 hover:text-violet-400' :
-                                                    spec.color === 'blue' ? 'hover:border-blue-500 hover:text-blue-400' :
-                                                        'hover:border-green-500 hover:text-green-400'
-                                            }`}
+                                        className="chip text-sm"
                                     >
                                         {skill}
                                     </span>
@@ -63,28 +52,6 @@ export function Skills() {
                             </div>
                         </div>
                     ))}
-                </div>
-
-                {/* Languages summary */}
-                <div className="mt-10 text-center">
-                    <div className="inline-flex flex-wrap justify-center gap-5 text-sm text-muted font-mono">
-                        <span className="flex items-center gap-2">
-                            <span className="w-2.5 h-2.5 rounded-full bg-yellow-400"></span>
-                            Python
-                        </span>
-                        <span className="flex items-center gap-2">
-                            <span className="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
-                            Go
-                        </span>
-                        <span className="flex items-center gap-2">
-                            <span className="w-2.5 h-2.5 rounded-full bg-orange-400"></span>
-                            Rust
-                        </span>
-                        <span className="flex items-center gap-2">
-                            <span className="w-2.5 h-2.5 rounded-full bg-blue-400"></span>
-                            TypeScript
-                        </span>
-                    </div>
                 </div>
             </div>
         </section>

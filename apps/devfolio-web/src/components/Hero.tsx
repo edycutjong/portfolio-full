@@ -2,82 +2,52 @@
 
 export function Hero() {
     return (
-        <section className="min-h-[80vh] flex items-center justify-center px-6 pt-20 pb-12">
+        <section className="min-h-[90vh] flex items-center px-6 pt-24 pb-16">
             <div className="container-narrow">
                 {/* Available badge */}
-                <div className="flex items-center gap-2 mb-4 animate-fade-in">
-                    <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+                <div className="flex items-center gap-2.5 mb-8 animate-fade-in">
+                    <span className="relative flex h-2.5 w-2.5">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
                     </span>
-                    <span className="text-sm text-muted font-mono">Available for remote opportunities</span>
-                </div>
-
-                {/* Impact metrics */}
-                <div className="flex flex-wrap gap-4 sm:gap-6 mb-6 font-mono text-sm text-muted animate-slide-up">
-                    <span>5 Production Apps</span>
-                    <span className="hidden sm:inline text-zinc-600">•</span>
-                    <span>4 Tech Stacks</span>
-                    <span className="hidden sm:inline text-zinc-600">•</span>
-                    <span>100% Test Coverage</span>
+                    <span className="text-sm text-emerald-400 font-medium">Available for opportunities</span>
                 </div>
 
                 {/* Main heading */}
-                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 animate-slide-up leading-tight" style={{ animationDelay: '0.1s' }}>
+                <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold mb-6 animate-slide-up leading-[1.1]">
                     <span className="text-gradient">Full-Stack Engineer</span>
                     <br />
-                    <span className="text-zinc-400">with AI/ML Expertise</span>
+                    <span className="text-zinc-400">& AI Specialist</span>
                 </h1>
 
                 {/* Subtitle */}
-                <p className="text-lg md:text-xl text-muted max-w-2xl mb-8 animate-slide-up leading-relaxed" style={{ animationDelay: '0.15s' }}>
-                    Building production systems that scale. Python + Go + Rust + TypeScript.
-                    <br className="hidden md:block" />
-                    Specialized in RAG pipelines, real-time systems, and cloud-native architecture.
+                <p className="text-lg md:text-xl text-muted max-w-xl mb-10 animate-slide-up leading-relaxed" style={{ animationDelay: '0.1s' }}>
+                    I build production systems that scale — from RAG pipelines and real-time WebSockets
+                    to cloud-native infrastructure. Python, Go, Rust, and TypeScript.
                 </p>
 
                 {/* CTA Buttons */}
-                <div className="flex flex-col sm:flex-row gap-4 mb-10 animate-slide-up" style={{ animationDelay: '0.2s' }}>
+                <div className="flex flex-wrap gap-4 mb-16 animate-slide-up" style={{ animationDelay: '0.15s' }}>
                     <a href="#projects" className="btn-primary">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0l-4-4m4 4l-4 4" />
+                        View My Work
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                         </svg>
-                        View Projects
                     </a>
                     <a href="#contact" className="btn-secondary">
                         Get in Touch
                     </a>
                 </div>
 
-                {/* Tech stack - Terminal style */}
-                <div className="terminal-box max-w-xl animate-slide-up" style={{ animationDelay: '0.25s' }}>
-                    <div className="terminal-header">
-                        <span className="terminal-dot terminal-dot-red"></span>
-                        <span className="terminal-dot terminal-dot-yellow"></span>
-                        <span className="terminal-dot terminal-dot-green"></span>
-                        <span className="text-xs text-muted ml-3">tech_stack.sh</span>
-                    </div>
-                    <div className="terminal-body text-sm space-y-1.5">
-                        <div>
-                            <span className="text-cyan-400">$</span>
-                            <span className="text-muted ml-2">backend:</span>
-                            <span className="text-zinc-300 ml-2">Python · Go · Rust</span>
-                        </div>
-                        <div>
-                            <span className="text-cyan-400">$</span>
-                            <span className="text-muted ml-2">frontend:</span>
-                            <span className="text-zinc-300 ml-2">Next.js · TypeScript</span>
-                        </div>
-                        <div>
-                            <span className="text-cyan-400">$</span>
-                            <span className="text-muted ml-2">ai:</span>
-                            <span className="text-zinc-300 ml-2">LangChain · OpenAI · RAG</span>
-                        </div>
-                        <div>
-                            <span className="text-cyan-400">$</span>
-                            <span className="text-muted ml-2">infra:</span>
-                            <span className="text-zinc-300 ml-2">Docker · K8s · Terraform</span>
-                        </div>
+                {/* Tech stack - Clean inline list */}
+                <div className="animate-slide-up" style={{ animationDelay: '0.2s' }}>
+                    <p className="text-sm text-muted mb-4 font-mono uppercase tracking-wider">Tech I work with</p>
+                    <div className="flex flex-wrap gap-3">
+                        {['Python', 'Go', 'Rust', 'TypeScript', 'Next.js', 'LangChain', 'Docker', 'Kubernetes'].map((tech) => (
+                            <span key={tech} className="chip">
+                                {tech}
+                            </span>
+                        ))}
                     </div>
                 </div>
             </div>
