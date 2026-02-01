@@ -21,7 +21,7 @@
 | Project | Tech Stack | Live URL | Status |
 |---------|------------|----------|--------|
 | **DevFolio Web** | Next.js 15, TypeScript | [edycu.dev](https://edycu.dev) | ✅ Live |
-| **DevFolio API** | Bun, Hono | [Vercel](https://portfolio-full-devfolio-api.vercel.app) | ✅ Live |
+| **DevFolio API** | Bun, Hono | [Vercel](https://api.edycu.dev) | ✅ Live |
 | **DocuMind API** | Python, FastAPI, RAG | [documind-api.edycu.dev](https://documind-api.edycu.dev) | ✅ Live |
 | **FlowState API** | Go, WebSocket | [flowstate-api.edycu.dev](https://flowstate-api.edycu.dev) | ✅ Live |
 | **DataPulse Analytics** | Rust, Axum | [datapulse-api.edycu.dev](https://datapulse-api.edycu.dev) | ✅ Live |

@@ -39,7 +39,7 @@ export function ChatBot() {
         setIsLoading(true)
 
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.edycu.dev'
             const res = await fetch(`${apiUrl}/api/chat`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

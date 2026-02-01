@@ -32,7 +32,7 @@ This API is public and does not require authentication for read operations.
             description: 'Local development',
         },
         {
-            url: 'https://portfolio-full-devfolio-api.vercel.app',
+            url: 'https://api.edycu.dev',
             description: 'Production',
         },
     ],
