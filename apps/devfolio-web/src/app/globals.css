@@ -41,25 +41,27 @@
   --space-24: 6rem;
   /* 96px - major sections */
 
-  /* Component tokens (8pt based) */
-  --section-gap: var(--space-24);
-  /* 96px */
-  --card-padding: var(--space-6);
-  /* 24px */
+  /* Component tokens (mockup-based) */
+  --section-gap: var(--space-20);
+  /* 80px - per mockup */
+  --card-padding: 1.75rem;
+  /* 28px */
   --card-padding-sm: var(--space-5);
   /* 20px */
-  --btn-padding-y: 0.75rem;
-  /* 12px */
-  --btn-padding-x: 1.5rem;
-  /* 24px */
+  --btn-padding-y: 0.875rem;
+  /* 14px */
+  --btn-padding-x: 1.75rem;
+  /* 28px */
   --badge-padding-y: 0.375rem;
   /* 6px */
   --badge-padding-x: 0.75rem;
   /* 12px */
   --chip-padding-y: 0.5rem;
   /* 8px */
-  --chip-padding-x: 0.875rem;
-  /* 14px */
+  --chip-padding-x: 1rem;
+  /* 16px */
+  --chip-gap: 0.625rem;
+  /* 10px */
 }
 
 /* Light theme */

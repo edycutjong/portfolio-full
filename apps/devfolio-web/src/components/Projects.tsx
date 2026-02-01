@@ -106,24 +106,23 @@ export function Projects() {
     return (
         <section id="projects" className="section-padding">
             <div className="container-wide">
-                {/* Section header */}
-                <div className="mb-12 animate-fade-in">
-                    <h2 className="text-3xl md:text-4xl font-bold mb-4">Projects</h2>
-                    <p className="text-lg text-muted max-w-2xl">
-                        Production applications built with modern tech stacks.
-                        Each project is deployed and running in the real world.
+                {/* Section header - centered per mockup */}
+                <div className="text-center mb-12 animate-fade-in">
+                    <h2 className="text-4xl md:text-5xl font-bold mb-3">Projects</h2>
+                    <p className="text-lg text-muted max-w-2xl mx-auto">
+                        A showcase of my recent work in software development, AI, and system design.
                     </p>
                 </div>
 
-                {/* Category filter */}
-                <div className="flex flex-wrap gap-2 mb-12">
+                {/* Category filter - pill buttons with border per mockup */}
+                <div className="flex flex-wrap justify-center gap-3 mb-12">
                     {categories.map((cat) => (
                         <button
                             key={cat.id}
                             onClick={() => setActiveCategory(cat.id)}
-                            className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${activeCategory === cat.id
-                                    ? 'bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-white'
-                                    : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-white'
+                            className={`px-5 py-2.5 rounded-full text-sm font-medium border transition-all ${activeCategory === cat.id
+                                    ? 'bg-white text-zinc-900 border-white'
+                                    : 'bg-transparent text-zinc-400 border-zinc-700 hover:border-zinc-500 hover:text-white'
                                 }`}
                         >
                             {cat.label}
@@ -150,10 +149,10 @@ export function Projects() {
                                     {project.description}
                                 </p>
 
-                                {/* Tech stack */}
-                                <div className="flex flex-wrap gap-2 mb-6">
+                                {/* Tech stack - as chips per mockup */}
+                                <div className="flex flex-wrap gap-[var(--chip-gap)] mb-6">
                                     {project.techStack.map((tech) => (
-                                        <span key={tech} className="text-xs px-2.5 py-1 bg-zinc-800/60 rounded-md text-zinc-400">
+                                        <span key={tech} className="chip text-xs">
                                             {tech}
                                         </span>
                                     ))}
@@ -205,9 +204,9 @@ export function Projects() {
                                     {project.description}
                                 </p>
 
-                                <div className="flex flex-wrap gap-1.5 mb-5">
+                                <div className="flex flex-wrap gap-[var(--chip-gap)] mb-5">
                                     {project.techStack.slice(0, 4).map((tech) => (
-                                        <span key={tech} className="text-xs px-2 py-0.5 bg-zinc-800/60 rounded text-zinc-400">
+                                        <span key={tech} className="chip text-xs">
                                             {tech}
                                         </span>
                                     ))}
