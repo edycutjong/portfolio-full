@@ -17,8 +17,31 @@ from app.services.rag import RAGService
 
 app = FastAPI(
     title="DocuMind AI",
-    description="Upload documents, ask questions, get instant cited answers",
+    description="""
+## Intelligent Document Q&A API
+
+Upload documents, ask questions, and get instant **cited answers** powered by RAG (Retrieval-Augmented Generation).
+
+### Features
+- 📄 **Document Upload**: Support for PDF, DOCX, TXT, and Markdown files
+- 🔍 **Semantic Search**: Find relevant context across your documents
+- 🤖 **AI Answers**: GPT-4o-mini powered responses with citations
+- 📁 **Collections**: Organize documents into searchable groups
+
+### Quick Start
+1. Upload a document via `POST /api/documents/upload`
+2. Ask a question via `POST /api/ask`
+3. Get an AI-generated answer with source citations
+    """,
     version="0.1.0",
+    docs_url="/docs",
+    redoc_url="/redoc",
+    openapi_tags=[
+        {"name": "Health", "description": "API health check"},
+        {"name": "Documents", "description": "Document upload and management"},
+        {"name": "Q&A", "description": "Ask questions about your documents"},
+        {"name": "Collections", "description": "Organize documents into groups"},
+    ],
 )
 
 # CORS middleware
@@ -78,7 +101,7 @@ class DocumentInfo(BaseModel):
 
 
 # Routes
-@app.get("/", response_model=HealthResponse)
+@app.get("/", response_model=HealthResponse, tags=["Health"])
 async def health_check():
     """API health check endpoint."""
     return HealthResponse(
@@ -88,7 +111,7 @@ async def health_check():
     )
 
 
-@app.post("/api/documents/upload", response_model=DocumentUploadResponse)
+@app.post("/api/documents/upload", response_model=DocumentUploadResponse, tags=["Documents"])
 async def upload_document(file: UploadFile = File(...)):
     """
     Upload a document for processing.
@@ -114,13 +137,13 @@ async def upload_document(file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.get("/api/documents", response_model=list[DocumentInfo])
+@app.get("/api/documents", response_model=list[DocumentInfo], tags=["Documents"])
 async def list_documents():
     """List all uploaded documents."""
     return document_service.list_documents()
 
 
-@app.get("/api/documents/{document_id}", response_model=DocumentInfo)
+@app.get("/api/documents/{document_id}", response_model=DocumentInfo, tags=["Documents"])
 async def get_document(document_id: str):
     """Get information about a specific document."""
     doc = document_service.get_document(document_id)
@@ -129,7 +152,7 @@ async def get_document(document_id: str):
     return doc
 
 
-@app.delete("/api/documents/{document_id}")
+@app.delete("/api/documents/{document_id}", tags=["Documents"])
 async def delete_document(document_id: str):
     """Delete a document and its embeddings."""
     success = document_service.delete_document(document_id)
@@ -138,7 +161,7 @@ async def delete_document(document_id: str):
     return {"message": "Document deleted successfully"}
 
 
-@app.post("/api/ask", response_model=AnswerResponse)
+@app.post("/api/ask", response_model=AnswerResponse, tags=["Q&A"])
 async def ask_question(request: QuestionRequest):
     """
     Ask a question about uploaded documents.
@@ -173,14 +196,14 @@ class Collection(BaseModel):
     created_at: str
 
 
-@app.post("/api/collections", response_model=Collection)
+@app.post("/api/collections", response_model=Collection, tags=["Collections"])
 async def create_collection(data: CollectionCreate):
     """Create a new document collection."""
     collection = document_service.create_collection(data.name, data.description)
     return Collection(**collection)
 
 
-@app.get("/api/collections", response_model=list[Collection])
+@app.get("/api/collections", response_model=list[Collection], tags=["Collections"])
 async def list_collections():
     """List all document collections."""
     return document_service.list_collections()

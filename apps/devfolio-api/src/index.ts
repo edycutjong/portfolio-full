@@ -2,10 +2,12 @@ import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { logger } from 'hono/logger'
 import { prettyJSON } from 'hono/pretty-json'
+import { apiReference } from '@scalar/hono-api-reference'
 import { projectsRouter } from './routes/projects'
 import { profileRouter } from './routes/profile'
 import { contactRouter } from './routes/contact'
 import { chatRouter } from './routes/chat'
+import { openApiSpec } from './openapi'
 
 const app = new Hono()
 
@@ -30,6 +32,21 @@ app.get('/', (c) => {
         timestamp: new Date().toISOString(),
     })
 })
+
+// OpenAPI spec endpoint
+app.get('/openapi.json', (c) => {
+    return c.json(openApiSpec)
+})
+
+// API Documentation (Scalar)
+app.get(
+    '/docs',
+    apiReference({
+        theme: 'kepler',
+        url: '/openapi.json',
+        pageTitle: 'DevFolio API Documentation',
+    })
+)
 
 // Routes
 app.route('/api/projects', projectsRouter)

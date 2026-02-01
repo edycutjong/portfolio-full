@@ -15,8 +15,33 @@ import asyncio
 
 app = FastAPI(
     title="CloudNative Deploy",
-    description="Kubernetes deployment orchestration API",
+    description="""
+## Kubernetes Deployment Orchestration API
+
+Manage Kubernetes deployments, services, and infrastructure with ease.
+
+### Features
+- 🚀 **Deployments**: Create, update, and scale Kubernetes deployments
+- 🔧 **Services**: Expose deployments with ClusterIP, NodePort, or LoadBalancer
+- 📦 **Pods**: Monitor pod status and health
+- 🌐 **Namespaces**: Organize workloads across namespaces
+- 📊 **Cluster Info**: View cluster-wide metrics and status
+
+### Getting Started
+1. Create a deployment via `POST /api/deployments`
+2. Create a service to expose it via `POST /api/services`
+3. Monitor status via `GET /api/deployments/{id}/pods`
+    """,
     version="0.1.0",
+    docs_url="/docs",
+    redoc_url="/redoc",
+    openapi_tags=[
+        {"name": "Health", "description": "API health check"},
+        {"name": "Deployments", "description": "Kubernetes deployment management"},
+        {"name": "Services", "description": "Kubernetes service management"},
+        {"name": "Namespaces", "description": "Namespace operations"},
+        {"name": "Cluster", "description": "Cluster-wide information"},
+    ],
 )
 
 app.add_middleware(
@@ -171,7 +196,7 @@ async def simulate_deployment_rollout(deployment_id: str):
 
 # === API Endpoints ===
 
-@app.get("/")
+@app.get("/", tags=["Health"])
 async def health():
     return {
         "status": "healthy",
@@ -183,7 +208,7 @@ async def health():
 
 # Deployments
 
-@app.post("/api/deployments", response_model=Deployment, status_code=201)
+@app.post("/api/deployments", response_model=Deployment, status_code=201, tags=["Deployments"])
 async def create_deployment(
     dep: DeploymentCreate,
     background_tasks: BackgroundTasks
@@ -211,7 +236,7 @@ async def create_deployment(
     return deployment
 
 
-@app.get("/api/deployments", response_model=list[Deployment])
+@app.get("/api/deployments", response_model=list[Deployment], tags=["Deployments"])
 async def list_deployments(namespace: Optional[str] = None):
     """List all deployments."""
     result = list(deployments.values())
@@ -220,7 +245,7 @@ async def list_deployments(namespace: Optional[str] = None):
     return result
 
 
-@app.get("/api/deployments/{deployment_id}", response_model=Deployment)
+@app.get("/api/deployments/{deployment_id}", response_model=Deployment, tags=["Deployments"])
 async def get_deployment(deployment_id: str):
     """Get deployment details."""
     if deployment_id not in deployments:
@@ -228,7 +253,7 @@ async def get_deployment(deployment_id: str):
     return deployments[deployment_id]
 
 
-@app.patch("/api/deployments/{deployment_id}", response_model=Deployment)
+@app.patch("/api/deployments/{deployment_id}", response_model=Deployment, tags=["Deployments"])
 async def update_deployment(
     deployment_id: str,
     update: DeploymentUpdate,
@@ -259,7 +284,7 @@ async def update_deployment(
     return dep
 
 
-@app.delete("/api/deployments/{deployment_id}")
+@app.delete("/api/deployments/{deployment_id}", tags=["Deployments"])
 async def delete_deployment(deployment_id: str):
     """Delete a deployment."""
     if deployment_id not in deployments:
@@ -275,7 +300,7 @@ async def delete_deployment(deployment_id: str):
     return {"message": "Deployment deleted"}
 
 
-@app.get("/api/deployments/{deployment_id}/pods", response_model=list[PodStatus])
+@app.get("/api/deployments/{deployment_id}/pods", response_model=list[PodStatus], tags=["Deployments"])
 async def get_deployment_pods(deployment_id: str):
     """Get pods for a deployment."""
     if deployment_id not in deployments:
@@ -296,7 +321,7 @@ async def get_deployment_pods(deployment_id: str):
     return pods
 
 
-@app.get("/api/deployments/{deployment_id}/manifest")
+@app.get("/api/deployments/{deployment_id}/manifest", tags=["Deployments"])
 async def get_deployment_manifest(deployment_id: str):
     """Get the Kubernetes manifest for a deployment."""
     if deployment_id not in deployments:
@@ -307,7 +332,7 @@ async def get_deployment_manifest(deployment_id: str):
 
 # Services
 
-@app.post("/api/services", response_model=Service, status_code=201)
+@app.post("/api/services", response_model=Service, status_code=201, tags=["Services"])
 async def create_service(svc: ServiceCreate):
     """Create a Kubernetes service."""
     if svc.deployment_id not in deployments:
@@ -332,13 +357,13 @@ async def create_service(svc: ServiceCreate):
     return service
 
 
-@app.get("/api/services", response_model=list[Service])
+@app.get("/api/services", response_model=list[Service], tags=["Services"])
 async def list_services():
     """List all services."""
     return list(services.values())
 
 
-@app.delete("/api/services/{service_id}")
+@app.delete("/api/services/{service_id}", tags=["Services"])
 async def delete_service(service_id: str):
     """Delete a service."""
     if service_id not in services:
@@ -350,7 +375,7 @@ async def delete_service(service_id: str):
 
 # Namespaces (mock)
 
-@app.get("/api/namespaces")
+@app.get("/api/namespaces", tags=["Namespaces"])
 async def list_namespaces():
     """List Kubernetes namespaces."""
     return [
@@ -363,7 +388,7 @@ async def list_namespaces():
 
 # Cluster info
 
-@app.get("/api/cluster/info")
+@app.get("/api/cluster/info", tags=["Cluster"])
 async def get_cluster_info():
     """Get cluster information."""
     return {

@@ -95,9 +95,12 @@ var hub = NewHub()
 func main() {
 	mux := http.NewServeMux()
 
-	// Health check
 	mux.HandleFunc("/", handleHealth)
 	mux.HandleFunc("/health", handleHealth)
+
+	// API Documentation
+	mux.HandleFunc("/openapi.json", handleOpenAPI)
+	mux.HandleFunc("/docs", handleDocs)
 
 	// REST endpoints
 	mux.HandleFunc("/api/rooms", handleRooms)
@@ -131,6 +134,110 @@ func handleHealth(w http.ResponseWriter, r *http.Request) {
 		"version":   "0.1.0",
 		"timestamp": time.Now().UTC().Format(time.RFC3339),
 	})
+}
+
+func handleOpenAPI(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	openAPISpec := map[string]interface{}{
+		"openapi": "3.1.0",
+		"info": map[string]interface{}{
+			"title":       "FlowState API",
+			"version":     "0.1.0",
+			"description": "Real-time collaboration API with WebSocket support for live document editing, cursor tracking, and presence detection.",
+		},
+		"servers": []map[string]string{
+			{"url": "http://localhost:8001", "description": "Local development"},
+			{"url": "https://flowstate-api.railway.app", "description": "Production"},
+		},
+		"tags": []map[string]string{
+			{"name": "Health", "description": "API health check"},
+			{"name": "Rooms", "description": "Collaboration room management"},
+			{"name": "WebSocket", "description": "Real-time communication"},
+		},
+		"paths": map[string]interface{}{
+			"/": map[string]interface{}{
+				"get": map[string]interface{}{
+					"tags":        []string{"Health"},
+					"summary":     "Health check",
+					"description": "Returns API health status",
+					"responses": map[string]interface{}{
+						"200": map[string]interface{}{"description": "API is healthy"},
+					},
+				},
+			},
+			"/api/rooms": map[string]interface{}{
+				"get": map[string]interface{}{
+					"tags":        []string{"Rooms"},
+					"summary":     "List all rooms",
+					"description": "Get all active collaboration rooms",
+					"responses": map[string]interface{}{
+						"200": map[string]interface{}{"description": "List of rooms"},
+					},
+				},
+				"post": map[string]interface{}{
+					"tags":        []string{"Rooms"},
+					"summary":     "Create a room",
+					"description": "Create a new collaboration room",
+					"responses": map[string]interface{}{
+						"201": map[string]interface{}{"description": "Room created"},
+					},
+				},
+			},
+			"/api/rooms/{roomId}": map[string]interface{}{
+				"get": map[string]interface{}{
+					"tags":        []string{"Rooms"},
+					"summary":     "Get room details",
+					"description": "Get room info including connected clients and document state",
+					"responses": map[string]interface{}{
+						"200": map[string]interface{}{"description": "Room details"},
+						"404": map[string]interface{}{"description": "Room not found"},
+					},
+				},
+				"delete": map[string]interface{}{
+					"tags":        []string{"Rooms"},
+					"summary":     "Delete a room",
+					"description": "Delete a collaboration room",
+					"responses": map[string]interface{}{
+						"200": map[string]interface{}{"description": "Room deleted"},
+					},
+				},
+			},
+			"/ws": map[string]interface{}{
+				"get": map[string]interface{}{
+					"tags":        []string{"WebSocket"},
+					"summary":     "WebSocket connection",
+					"description": "Upgrade to WebSocket for real-time collaboration. Message types: join, leave, cursor, focus, edit, presence, typing, sync",
+				},
+			},
+		},
+	}
+	json.NewEncoder(w).Encode(openAPISpec)
+}
+
+func handleDocs(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+	html := `<!DOCTYPE html>
+<html>
+<head>
+    <title>FlowState API Documentation</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css">
+</head>
+<body>
+    <div id="swagger-ui"></div>
+    <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
+    <script>
+        SwaggerUIBundle({
+            url: "/openapi.json",
+            dom_id: '#swagger-ui',
+            presets: [SwaggerUIBundle.presets.apis, SwaggerUIBundle.SwaggerUIStandalonePreset],
+            layout: "BaseLayout"
+        });
+    </script>
+</body>
+</html>`
+	w.Write([]byte(html))
 }
 
 func handleRooms(w http.ResponseWriter, r *http.Request) {

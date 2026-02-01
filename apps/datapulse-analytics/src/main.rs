@@ -313,12 +313,82 @@ async fn get_window_results(
 
 // === Main Application ===
 
+use axum::response::Html;
+
+async fn openapi_handler() -> Json<serde_json::Value> {
+    Json(serde_json::json!({
+        "openapi": "3.1.0",
+        "info": {
+            "title": "DataPulse Analytics",
+            "version": "0.1.0",
+            "description": "High-performance streaming analytics engine with Kafka integration for real-time data processing, windowed aggregations, and metrics collection."
+        },
+        "servers": [
+            {"url": "http://localhost:8080", "description": "Local development"},
+            {"url": "https://datapulse-api.railway.app", "description": "Production"}
+        ],
+        "tags": [
+            {"name": "Health", "description": "API health and stats"},
+            {"name": "Pipelines", "description": "Data pipeline management"},
+            {"name": "Events", "description": "Event ingestion"},
+            {"name": "Metrics", "description": "Metrics collection"}
+        ],
+        "paths": {
+            "/": {"get": {"tags": ["Health"], "summary": "Health check"}},
+            "/api/stats": {"get": {"tags": ["Health"], "summary": "Get system stats"}},
+            "/api/pipelines": {
+                "get": {"tags": ["Pipelines"], "summary": "List all pipelines"},
+                "post": {"tags": ["Pipelines"], "summary": "Create a pipeline"}
+            },
+            "/api/pipelines/{id}": {
+                "get": {"tags": ["Pipelines"], "summary": "Get pipeline details"},
+                "delete": {"tags": ["Pipelines"], "summary": "Delete a pipeline"}
+            },
+            "/api/pipelines/{id}/start": {"post": {"tags": ["Pipelines"], "summary": "Start a pipeline"}},
+            "/api/pipelines/{id}/stop": {"post": {"tags": ["Pipelines"], "summary": "Stop a pipeline"}},
+            "/api/pipelines/{id}/window": {"get": {"tags": ["Pipelines"], "summary": "Get windowed results"}},
+            "/api/events/ingest": {"post": {"tags": ["Events"], "summary": "Ingest events"}},
+            "/api/metrics": {
+                "get": {"tags": ["Metrics"], "summary": "Get all metrics"},
+                "post": {"tags": ["Metrics"], "summary": "Record a metric"}
+            }
+        }
+    }))
+}
+
+async fn docs_handler() -> Html<&'static str> {
+    Html(r#"<!DOCTYPE html>
+<html>
+<head>
+    <title>DataPulse API Documentation</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css">
+</head>
+<body>
+    <div id="swagger-ui"></div>
+    <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
+    <script>
+        SwaggerUIBundle({
+            url: "/openapi.json",
+            dom_id: '#swagger-ui',
+            presets: [SwaggerUIBundle.presets.apis, SwaggerUIBundle.SwaggerUIStandalonePreset],
+            layout: "BaseLayout"
+        });
+    </script>
+</body>
+</html>"#)
+}
+
 pub fn create_router(state: SharedState) -> Router {
     Router::new()
         // Health & stats
         .route("/", get(health))
         .route("/health", get(health))
         .route("/api/stats", get(get_stats))
+        // Documentation
+        .route("/docs", get(docs_handler))
+        .route("/openapi.json", get(openapi_handler))
         // Pipelines
         .route("/api/pipelines", post(create_pipeline))
         .route("/api/pipelines", get(list_pipelines))
