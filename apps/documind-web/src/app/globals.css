@@ -39,3 +39,12 @@ body {
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.4; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1); }
+}
+
+.animate-pulse-dot {
+    animation: pulse 1.4s infinite;
+}
