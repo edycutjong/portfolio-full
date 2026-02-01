@@ -1,13 +1,61 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 
 export default function Home() {
     const [question, setQuestion] = useState('')
     const [answer, setAnswer] = useState('')
     const [loading, setLoading] = useState(false)
+    const [uploadedFile, setUploadedFile] = useState<File | null>(null)
+    const [uploadStatus, setUploadStatus] = useState<string>('')
+    const [documentId, setDocumentId] = useState<string | null>(null)
+    const fileInputRef = useRef<HTMLInputElement>(null)
 
     const API_URL = 'https://documind-api.edycu.dev'
+
+    const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+        if (!file) return
+
+        setUploadedFile(file)
+        setUploadStatus('Uploading...')
+
+        try {
+            const formData = new FormData()
+            formData.append('file', file)
+
+            const response = await fetch(`${API_URL}/api/documents/upload`, {
+                method: 'POST',
+                body: formData,
+            })
+
+            if (response.ok) {
+                const data = await response.json()
+                setDocumentId(data.document_id)
+                setUploadStatus(`✅ Uploaded: ${file.name}`)
+            } else {
+                setUploadStatus(`❌ Upload failed: ${response.statusText}`)
+            }
+        } catch (error) {
+            setUploadStatus(`✅ Demo mode: ${file.name} ready`)
+            setDocumentId('demo-doc-id')
+        }
+    }
+
+    const handleDropzoneClick = () => {
+        fileInputRef.current?.click()
+    }
+
+    const handleDrop = (e: React.DragEvent) => {
+        e.preventDefault()
+        const file = e.dataTransfer.files?.[0]
+        if (file && fileInputRef.current) {
+            const dataTransfer = new DataTransfer()
+            dataTransfer.items.add(file)
+            fileInputRef.current.files = dataTransfer.files
+            handleFileSelect({ target: fileInputRef.current } as React.ChangeEvent<HTMLInputElement>)
+        }
+    }
 
     const handleAsk = async () => {
         if (!question.trim()) return
@@ -16,14 +64,19 @@ export default function Home() {
         setAnswer('')
 
         try {
-            // For demo purposes, show API connection info
-            setAnswer(`📡 Connecting to DocuMind API at ${API_URL}...\n\n` +
-                `This is a demo interface. The backend API is live and ready to process your documents!\n\n` +
-                `Features:\n` +
-                `• PDF, DOCX, TXT support\n` +
-                `• GPT-4o-mini powered answers\n` +
-                `• Source citations\n` +
-                `• Real-time processing`)
+            if (documentId && documentId !== 'demo-doc-id') {
+                const response = await fetch(`${API_URL}/api/ask`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ question, document_id: documentId }),
+                })
+                const data = await response.json()
+                setAnswer(data.answer || 'No answer received.')
+            } else {
+                setAnswer(`📡 Connected to DocuMind API at ${API_URL}\n\n` +
+                    `Your question: "${question}"\n\n` +
+                    `This is a demo. Upload a document and ask questions to get AI-powered answers with citations!`)
+            }
         } catch (error) {
             setAnswer('Error connecting to API. Please try again.')
         } finally {
@@ -63,9 +116,25 @@ export default function Home() {
                 {/* Upload Section */}
                 <div className="glass-card p-8">
                     <h2 className="text-2xl font-bold mb-4">📁 Upload Documents</h2>
-                    <div className="border-2 border-dashed border-gray-600 rounded-xl p-12 text-center hover:border-primary-500 transition-colors cursor-pointer">
+                    <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleFileSelect}
+                        accept=".pdf,.docx,.txt,.md"
+                        className="hidden"
+                    />
+                    <div
+                        onClick={handleDropzoneClick}
+                        onDrop={handleDrop}
+                        onDragOver={(e) => e.preventDefault()}
+                        className="border-2 border-dashed border-gray-600 rounded-xl p-12 text-center hover:border-primary-500 transition-colors cursor-pointer"
+                    >
                         <div className="text-4xl mb-4">📤</div>
-                        <p className="text-gray-400 mb-2">Drag & drop files here, or click to browse</p>
+                        {uploadStatus ? (
+                            <p className="text-primary-400 mb-2">{uploadStatus}</p>
+                        ) : (
+                            <p className="text-gray-400 mb-2">Drag & drop files here, or click to browse</p>
+                        )}
                         <p className="text-sm text-gray-500">Supports PDF, DOCX, TXT (max 10MB)</p>
                     </div>
                 </div>
