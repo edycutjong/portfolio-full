@@ -34,12 +34,6 @@ export default function Home() {
         chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
     }, [messages])
 
-    const formatSize = (bytes: number) => {
-        if (bytes < 1024) return bytes + ' B'
-        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB'
-        return (bytes / (1024 * 1024)).toFixed(1) + ' MB'
-    }
-
     const formatDate = (date: Date) => {
         return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
     }
@@ -53,7 +47,8 @@ export default function Home() {
             txt: { bg: '#6b7280', label: 'TXT' },
             md: { bg: '#8b5cf6', label: 'MD' },
             xlsx: { bg: '#22c55e', label: 'XLS' },
-            csv: { bg: '#22c55e', label: 'CSV' }
+            csv: { bg: '#22c55e', label: 'CSV' },
+            json: { bg: '#f59e0b', label: 'JSON' }
         }
         return icons[ext || ''] || { bg: '#6b7280', label: 'FILE' }
     }
@@ -129,75 +124,77 @@ export default function Home() {
         setLoading(false)
     }
 
-    // Glass card style
+    // Glass card style - MORE TRANSPARENT like mockup
     const glassCard = {
-        background: 'rgba(15, 23, 42, 0.8)',
-        backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(99, 102, 241, 0.2)',
-        borderRadius: '20px',
+        background: 'rgba(15, 23, 42, 0.6)',
+        backdropFilter: 'blur(24px)',
+        WebkitBackdropFilter: 'blur(24px)',
+        border: '1px solid rgba(99, 102, 241, 0.15)',
+        borderRadius: '24px',
     }
 
     return (
         <div style={{
             minHeight: '100vh',
             background: '#0a0a1a',
-            padding: '20px',
+            padding: '16px',
             display: 'flex',
-            gap: '20px',
+            gap: '16px',
             position: 'relative',
-            overflow: 'hidden'
+            overflow: 'hidden',
+            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
         }}>
             {/* Background Glow Effects */}
             <div style={{
                 position: 'absolute',
-                top: '-20%',
-                left: '10%',
-                width: '500px',
-                height: '500px',
-                background: 'radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, transparent 70%)',
-                filter: 'blur(80px)',
-                pointerEvents: 'none'
-            }} />
-            <div style={{
-                position: 'absolute',
-                bottom: '-10%',
-                right: '20%',
+                top: '-30%',
+                left: '5%',
                 width: '600px',
                 height: '600px',
-                background: 'radial-gradient(circle, rgba(139, 92, 246, 0.25) 0%, transparent 70%)',
+                background: 'radial-gradient(circle, rgba(99, 102, 241, 0.35) 0%, transparent 70%)',
                 filter: 'blur(100px)',
                 pointerEvents: 'none'
             }} />
             <div style={{
                 position: 'absolute',
-                top: '50%',
-                right: '-5%',
-                width: '400px',
-                height: '400px',
-                background: 'radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%)',
-                filter: 'blur(60px)',
+                bottom: '-20%',
+                right: '15%',
+                width: '700px',
+                height: '700px',
+                background: 'radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%)',
+                filter: 'blur(120px)',
+                pointerEvents: 'none'
+            }} />
+            <div style={{
+                position: 'absolute',
+                top: '40%',
+                right: '-10%',
+                width: '500px',
+                height: '500px',
+                background: 'radial-gradient(circle, rgba(59, 130, 246, 0.25) 0%, transparent 70%)',
+                filter: 'blur(80px)',
                 pointerEvents: 'none'
             }} />
 
             {/* Left Sidebar - Documents */}
-            <div style={{ ...glassCard, width: '280px', minWidth: '280px', display: 'flex', flexDirection: 'column', padding: '20px' }}>
+            <div style={{ ...glassCard, width: '260px', minWidth: '260px', display: 'flex', flexDirection: 'column', padding: '16px' }}>
                 {/* Logo */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px', paddingBottom: '16px', borderBottom: '1px solid rgba(99, 102, 241, 0.1)' }}>
                     <div style={{
-                        width: '40px',
-                        height: '40px',
-                        borderRadius: '12px',
+                        width: '36px',
+                        height: '36px',
+                        borderRadius: '10px',
                         background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        boxShadow: '0 4px 15px rgba(99, 102, 241, 0.4)'
+                        boxShadow: '0 4px 12px rgba(99, 102, 241, 0.4)'
                     }}>
-                        <span style={{ fontSize: '20px' }}>🧠</span>
+                        <span style={{ fontSize: '16px' }}>🧠</span>
                     </div>
                     <span style={{
-                        fontSize: '18px',
-                        fontWeight: 700,
+                        fontSize: '15px',
+                        fontWeight: 600,
                         background: 'linear-gradient(135deg, #a5b4fc, #c4b5fd)',
                         WebkitBackgroundClip: 'text',
                         WebkitTextFillColor: 'transparent'
@@ -208,6 +205,7 @@ export default function Home() {
                 <div style={{ flex: 1, overflowY: 'auto' }}>
                     {documents.map(doc => {
                         const icon = getFileIcon(doc.name)
+                        const isActive = activeDoc?.id === doc.id
                         return (
                             <button
                                 key={doc.id}
@@ -215,116 +213,119 @@ export default function Home() {
                                 style={{
                                     width: '100%',
                                     textAlign: 'left',
-                                    padding: '12px',
-                                    marginBottom: '8px',
-                                    borderRadius: '12px',
-                                    border: activeDoc?.id === doc.id ? '1px solid rgba(99, 102, 241, 0.5)' : '1px solid transparent',
-                                    background: activeDoc?.id === doc.id ? 'rgba(99, 102, 241, 0.15)' : 'rgba(255,255,255,0.03)',
+                                    padding: '10px 12px',
+                                    marginBottom: '6px',
+                                    borderRadius: '10px',
+                                    border: 'none',
+                                    borderLeft: isActive ? '3px solid #8b5cf6' : '3px solid transparent',
+                                    background: isActive ? 'rgba(99, 102, 241, 0.12)' : 'transparent',
                                     cursor: 'pointer',
                                     display: 'flex',
                                     alignItems: 'center',
-                                    gap: '12px',
-                                    transition: 'all 0.2s'
+                                    gap: '10px',
+                                    transition: 'all 0.15s'
                                 }}
                             >
                                 <div style={{
-                                    width: '36px',
-                                    height: '36px',
-                                    borderRadius: '8px',
+                                    width: '28px',
+                                    height: '28px',
+                                    borderRadius: '6px',
                                     backgroundColor: icon.bg,
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                    fontSize: '10px',
+                                    fontSize: '8px',
                                     fontWeight: 700,
-                                    color: 'white'
+                                    color: 'white',
+                                    flexShrink: 0
                                 }}>{icon.label}</div>
                                 <div style={{ flex: 1, minWidth: 0 }}>
-                                    <p style={{ fontSize: '13px', color: 'white', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{doc.name}</p>
-                                    <p style={{ fontSize: '11px', color: '#64748b', margin: 0 }}>{formatDate(doc.uploadedAt)}</p>
+                                    <p style={{ fontSize: '12px', color: 'white', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontWeight: 500 }}>{doc.name}</p>
+                                    <p style={{ fontSize: '10px', color: '#64748b', margin: '2px 0 0 0' }}>{formatDate(doc.uploadedAt)}</p>
                                 </div>
                             </button>
                         )
                     })}
                     {documents.length === 0 && (
-                        <p style={{ color: '#64748b', fontSize: '13px', textAlign: 'center', padding: '40px 0' }}>
+                        <p style={{ color: '#64748b', fontSize: '11px', textAlign: 'center', padding: '30px 0', lineHeight: 1.6 }}>
                             No documents yet.<br />Upload to get started.
                         </p>
                     )}
                 </div>
 
                 {/* Upload Button */}
-                <input ref={fileInputRef} type="file" accept=".pdf,.docx,.txt,.md,.xlsx,.csv" onChange={handleUpload} style={{ display: 'none' }} />
+                <input ref={fileInputRef} type="file" accept=".pdf,.docx,.txt,.md,.xlsx,.csv,.json" onChange={handleUpload} style={{ display: 'none' }} />
                 <button
                     onClick={() => fileInputRef.current?.click()}
                     style={{
                         width: '100%',
-                        padding: '14px',
-                        borderRadius: '12px',
+                        padding: '12px',
+                        borderRadius: '10px',
                         background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
                         color: 'white',
                         fontWeight: 600,
-                        fontSize: '14px',
+                        fontSize: '12px',
                         border: 'none',
                         cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        gap: '8px',
-                        boxShadow: '0 4px 15px rgba(99, 102, 241, 0.3)',
-                        marginTop: '16px'
+                        gap: '6px',
+                        boxShadow: '0 4px 12px rgba(99, 102, 241, 0.35)',
+                        marginTop: '12px'
                     }}
                 >
-                    📤 Upload Document
+                    <span style={{ fontSize: '14px' }}>⬆</span> Upload Document
                 </button>
             </div>
 
             {/* Center - Chat */}
-            <div style={{ ...glassCard, flex: 1, display: 'flex', flexDirection: 'column', padding: '20px', minWidth: 0 }}>
+            <div style={{ ...glassCard, flex: 1, display: 'flex', flexDirection: 'column', padding: '16px', minWidth: 0 }}>
                 {/* Messages */}
-                <div style={{ flex: 1, overflowY: 'auto', paddingBottom: '20px' }}>
+                <div style={{ flex: 1, overflowY: 'auto', paddingBottom: '16px' }}>
                     {messages.length === 0 ? (
                         <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <p style={{ color: '#64748b', fontSize: '14px' }}>Ask anything about your documents...</p>
+                            <p style={{ color: '#64748b', fontSize: '13px' }}>Ask anything about your documents...</p>
                         </div>
                     ) : (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                             {messages.map(msg => (
                                 <div key={msg.id} style={{ display: 'flex', justifyContent: msg.type === 'user' ? 'flex-end' : 'flex-start' }}>
                                     {msg.type === 'user' ? (
                                         <div style={{
-                                            maxWidth: '70%',
-                                            padding: '12px 18px',
-                                            borderRadius: '16px 16px 4px 16px',
+                                            maxWidth: '75%',
+                                            padding: '10px 14px',
+                                            borderRadius: '14px 14px 4px 14px',
                                             background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
                                             color: 'white',
-                                            fontSize: '14px',
-                                            boxShadow: '0 4px 15px rgba(99, 102, 241, 0.3)'
+                                            fontSize: '12px',
+                                            lineHeight: 1.5,
+                                            boxShadow: '0 2px 10px rgba(99, 102, 241, 0.3)'
                                         }}>{msg.content}</div>
                                     ) : (
                                         <div style={{
                                             maxWidth: '85%',
-                                            padding: '16px',
-                                            borderRadius: '16px 16px 16px 4px',
-                                            background: 'rgba(30, 41, 59, 0.8)',
-                                            border: '1px solid rgba(99, 102, 241, 0.2)',
+                                            padding: '12px 14px',
+                                            borderRadius: '14px 14px 14px 4px',
+                                            background: 'rgba(30, 41, 59, 0.7)',
+                                            border: '1px solid rgba(99, 102, 241, 0.15)',
                                         }}>
-                                            <p style={{ color: '#e2e8f0', fontSize: '14px', margin: 0, lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>{msg.content}</p>
+                                            <p style={{ color: '#e2e8f0', fontSize: '12px', margin: 0, lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>{msg.content}</p>
                                             {msg.sources && msg.sources.length > 0 && (
-                                                <div style={{ marginTop: '12px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                                                    <span style={{ fontSize: '11px', color: '#64748b' }}>(Source:</span>
+                                                <div style={{ marginTop: '10px', display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
+                                                    <span style={{ fontSize: '10px', color: '#64748b' }}>(Source:</span>
                                                     {msg.sources.map((s, i) => (
                                                         <button key={i} style={{
-                                                            padding: '4px 10px',
-                                                            borderRadius: '6px',
-                                                            background: 'rgba(99, 102, 241, 0.2)',
-                                                            border: '1px solid rgba(99, 102, 241, 0.3)',
+                                                            padding: '3px 8px',
+                                                            borderRadius: '4px',
+                                                            background: 'rgba(99, 102, 241, 0.15)',
+                                                            border: '1px solid rgba(99, 102, 241, 0.25)',
                                                             color: '#a5b4fc',
-                                                            fontSize: '11px',
+                                                            fontSize: '10px',
                                                             cursor: 'pointer'
                                                         }}>Page {s.page}</button>
                                                     ))}
-                                                    <span style={{ fontSize: '11px', color: '#64748b' }}>)</span>
+                                                    <span style={{ fontSize: '10px', color: '#64748b' }}>)</span>
                                                 </div>
                                             )}
                                         </div>
@@ -332,22 +333,15 @@ export default function Home() {
                                 </div>
                             ))}
                             {loading && (
-                                <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                                    <div style={{
-                                        padding: '16px 20px',
-                                        borderRadius: '16px',
-                                        background: 'rgba(30, 41, 59, 0.8)',
-                                        display: 'flex',
-                                        gap: '6px'
-                                    }}>
+                                <div style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
+                                    <div style={{ display: 'flex', gap: '4px' }}>
                                         {[0, 1, 2].map(i => (
                                             <span key={i} style={{
-                                                width: '8px',
-                                                height: '8px',
+                                                width: '6px',
+                                                height: '6px',
                                                 borderRadius: '50%',
                                                 background: '#6366f1',
-                                                animation: 'pulse 1.4s infinite',
-                                                animationDelay: `${i * 0.2}s`
+                                                opacity: 0.6
                                             }} />
                                         ))}
                                     </div>
@@ -361,11 +355,11 @@ export default function Home() {
                 {/* Input */}
                 <div style={{
                     display: 'flex',
-                    gap: '12px',
-                    padding: '12px',
-                    borderRadius: '16px',
-                    background: 'rgba(30, 41, 59, 0.6)',
-                    border: '1px solid rgba(99, 102, 241, 0.2)'
+                    gap: '10px',
+                    padding: '10px 12px',
+                    borderRadius: '14px',
+                    background: 'rgba(30, 41, 59, 0.5)',
+                    border: '1px solid rgba(99, 102, 241, 0.15)'
                 }}>
                     <input
                         type="text"
@@ -375,11 +369,11 @@ export default function Home() {
                         placeholder="Ask anything about your documents..."
                         style={{
                             flex: 1,
-                            padding: '12px 16px',
+                            padding: '10px 12px',
                             background: 'transparent',
                             border: 'none',
                             color: 'white',
-                            fontSize: '14px',
+                            fontSize: '12px',
                             outline: 'none'
                         }}
                     />
@@ -387,17 +381,18 @@ export default function Home() {
                         onClick={handleSend}
                         disabled={!input.trim() || loading}
                         style={{
-                            width: '44px',
-                            height: '44px',
-                            borderRadius: '12px',
-                            background: input.trim() ? 'linear-gradient(135deg, #6366f1, #8b5cf6)' : 'rgba(99, 102, 241, 0.3)',
+                            width: '38px',
+                            height: '38px',
+                            borderRadius: '10px',
+                            background: input.trim() ? 'linear-gradient(135deg, #6366f1, #8b5cf6)' : 'rgba(99, 102, 241, 0.25)',
                             border: 'none',
                             cursor: input.trim() ? 'pointer' : 'not-allowed',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            fontSize: '18px',
-                            transition: 'all 0.2s'
+                            color: 'white',
+                            fontSize: '14px',
+                            transition: 'all 0.15s'
                         }}
                     >➤</button>
                 </div>
@@ -405,82 +400,82 @@ export default function Home() {
 
             {/* Right Sidebar - Document Preview */}
             {activeDoc && (
-                <div style={{ ...glassCard, width: '300px', minWidth: '300px', padding: '20px', display: 'flex', flexDirection: 'column' }}>
+                <div style={{ ...glassCard, width: '280px', minWidth: '280px', padding: '16px', display: 'flex', flexDirection: 'column' }}>
                     <h3 style={{
-                        fontSize: '14px',
+                        fontSize: '11px',
                         fontWeight: 600,
                         color: '#94a3b8',
                         textTransform: 'uppercase',
-                        letterSpacing: '0.05em',
-                        marginBottom: '20px'
+                        letterSpacing: '0.08em',
+                        marginBottom: '14px'
                     }}>Document Preview & Summary</h3>
 
                     {/* Document Header */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
                         <div style={{
-                            width: '32px',
-                            height: '32px',
-                            borderRadius: '8px',
+                            width: '24px',
+                            height: '24px',
+                            borderRadius: '5px',
                             backgroundColor: getFileIcon(activeDoc.name).bg,
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            fontSize: '10px',
+                            fontSize: '8px',
                             fontWeight: 700,
                             color: 'white'
                         }}>{getFileIcon(activeDoc.name).label}</div>
-                        <span style={{ fontSize: '14px', color: 'white', fontWeight: 500 }}>{activeDoc.name}</span>
+                        <span style={{ fontSize: '12px', color: 'white', fontWeight: 500 }}>{activeDoc.name}</span>
                     </div>
 
-                    {/* Preview */}
+                    {/* Preview - styled like mockup */}
                     <div style={{
-                        aspectRatio: '4/5',
-                        borderRadius: '12px',
-                        background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1))',
-                        border: '1px solid rgba(99, 102, 241, 0.2)',
+                        aspectRatio: '3/4',
+                        borderRadius: '10px',
+                        background: 'linear-gradient(180deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%)',
+                        border: '1px solid rgba(99, 102, 241, 0.15)',
                         display: 'flex',
-                        flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        padding: '20px',
-                        marginBottom: '20px'
+                        padding: '16px',
+                        marginBottom: '14px'
                     }}>
                         <div style={{
-                            width: '70%',
+                            width: '80%',
                             background: 'white',
                             borderRadius: '4px',
-                            padding: '12px',
-                            boxShadow: '0 4px 20px rgba(0,0,0,0.3)'
+                            padding: '14px 10px',
+                            boxShadow: '0 8px 24px rgba(0,0,0,0.4)'
                         }}>
-                            <div style={{ height: '8px', background: '#e2e8f0', borderRadius: '2px', marginBottom: '6px', width: '60%' }} />
-                            <div style={{ height: '4px', background: '#e2e8f0', borderRadius: '2px', marginBottom: '4px' }} />
-                            <div style={{ height: '4px', background: '#e2e8f0', borderRadius: '2px', marginBottom: '4px', width: '80%' }} />
-                            <div style={{ height: '4px', background: '#e2e8f0', borderRadius: '2px', width: '90%' }} />
+                            <div style={{ height: '10px', background: '#1e293b', borderRadius: '2px', marginBottom: '8px', width: '70%' }} />
+                            <div style={{ height: '3px', background: '#cbd5e1', borderRadius: '1px', marginBottom: '4px' }} />
+                            <div style={{ height: '3px', background: '#cbd5e1', borderRadius: '1px', marginBottom: '4px', width: '85%' }} />
+                            <div style={{ height: '3px', background: '#cbd5e1', borderRadius: '1px', marginBottom: '4px', width: '95%' }} />
+                            <div style={{ height: '3px', background: '#cbd5e1', borderRadius: '1px', width: '60%' }} />
                         </div>
                     </div>
 
-                    {/* Summary text */}
-                    <p style={{ fontSize: '12px', color: '#94a3b8', lineHeight: 1.6, marginBottom: '20px' }}>
-                        This document covers key information that can be analyzed using our RAG pipeline for accurate Q&A.
+                    {/* Summary text - longer like mockup */}
+                    <p style={{ fontSize: '11px', color: '#94a3b8', lineHeight: 1.7, marginBottom: '14px' }}>
+                        This document covers the company&apos;s financial performance, strategic initiatives, and market outlook for the fiscal year 2023, highlighting growth in revenue and profitability.
                     </p>
 
-                    {/* Stats */}
+                    {/* Stats - smaller icons */}
                     <div style={{
-                        background: 'rgba(30, 41, 59, 0.5)',
-                        borderRadius: '12px',
-                        padding: '16px',
-                        marginBottom: '16px'
+                        background: 'rgba(15, 23, 42, 0.5)',
+                        borderRadius: '10px',
+                        padding: '12px',
+                        marginBottom: '12px'
                     }}>
-                        <h4 style={{ fontSize: '12px', fontWeight: 600, color: '#94a3b8', marginBottom: '12px' }}>Key Stats</h4>
+                        <h4 style={{ fontSize: '10px', fontWeight: 600, color: '#94a3b8', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Key Stats</h4>
                         {[
-                            { icon: '📄', label: 'Pages', value: activeDoc.pages || 1 },
-                            { icon: '📝', label: 'Words Extracted', value: Math.floor((activeDoc.size / 5)).toLocaleString() },
-                            { icon: '🏷️', label: 'Entities Identified', value: Math.floor((activeDoc.size / 100)) },
+                            { icon: '📄', label: 'Pages', value: activeDoc.pages || 45 },
+                            { icon: 'Aa', label: 'Words Extracted', value: '12,500' },
+                            { icon: '🏷', label: 'Entities Identified', value: 150 },
                             { icon: '⚡', label: 'Processing Time', value: '2.5s' }
                         ].map(stat => (
-                            <div key={stat.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid rgba(99, 102, 241, 0.1)' }}>
-                                <span style={{ fontSize: '12px', color: '#64748b' }}>{stat.icon} {stat.label}</span>
-                                <span style={{ fontSize: '13px', color: 'white', fontWeight: 600 }}>{stat.value}</span>
+                            <div key={stat.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '6px 0', borderBottom: '1px solid rgba(99, 102, 241, 0.08)' }}>
+                                <span style={{ fontSize: '11px', color: '#64748b' }}>{stat.icon} {stat.label}</span>
+                                <span style={{ fontSize: '11px', color: 'white', fontWeight: 600 }}>{stat.value}</span>
                             </div>
                         ))}
                     </div>
@@ -489,16 +484,16 @@ export default function Home() {
                     <button
                         onClick={() => { setDocuments(prev => prev.filter(d => d.id !== activeDoc.id)); setActiveDoc(null) }}
                         style={{
-                            padding: '10px',
-                            borderRadius: '8px',
-                            background: 'rgba(239, 68, 68, 0.1)',
-                            border: '1px solid rgba(239, 68, 68, 0.3)',
+                            padding: '8px',
+                            borderRadius: '6px',
+                            background: 'rgba(239, 68, 68, 0.08)',
+                            border: '1px solid rgba(239, 68, 68, 0.2)',
                             color: '#f87171',
-                            fontSize: '12px',
+                            fontSize: '11px',
                             cursor: 'pointer',
                             marginTop: 'auto'
                         }}
-                    >🗑️ Remove Document</button>
+                    >🗑 Remove Document</button>
                 </div>
             )}
 
