@@ -130,7 +130,7 @@ export function Contact() {
                     <form onSubmit={handleSubmit} className="md:col-span-3 glass-card p-8">
                         <div className="grid md:grid-cols-2 gap-6 mb-6">
                             <div>
-                                <label className="block text-sm font-medium text-gray-300 mb-2">
+                                <label className="block text-sm font-medium text-gray-200 mb-2">
                                     Name
                                 </label>
                                 <input
@@ -148,7 +148,7 @@ export function Contact() {
                                 {errors.name && <p className="text-red-400 text-sm mt-1">{errors.name}</p>}
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-300 mb-2">
+                                <label className="block text-sm font-medium text-gray-200 mb-2">
                                     Email
                                 </label>
                                 <input
@@ -168,7 +168,7 @@ export function Contact() {
                         </div>
 
                         <div className="mb-6">
-                            <label className="block text-sm font-medium text-gray-300 mb-2">
+                            <label className="block text-sm font-medium text-gray-200 mb-2">
                                 Subject
                             </label>
                             <input
@@ -187,7 +187,7 @@ export function Contact() {
                         </div>
 
                         <div className="mb-6">
-                            <label className="block text-sm font-medium text-gray-300 mb-2">
+                            <label className="block text-sm font-medium text-gray-200 mb-2">
                                 Message
                             </label>
                             <textarea

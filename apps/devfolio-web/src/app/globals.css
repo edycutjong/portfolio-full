@@ -108,6 +108,11 @@ body {
   overflow-x: hidden;
 }
 
+/* Scroll margin for sticky header overlap fix */
+section {
+  scroll-margin-top: 80px;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);

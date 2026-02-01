@@ -56,8 +56,8 @@ export function TypeWriter({
     }, [displayText, isDeleting, isPaused, textIndex, texts, typingSpeed, deletingSpeed, pauseDuration])
 
     return (
-        <span className={className}>
-            {displayText}
+        <span className={`inline-flex items-baseline ${className}`}>
+            <span className="whitespace-nowrap">{displayText}</span>
             <span className="cursor-blink text-primary-500">|</span>
         </span>
     )

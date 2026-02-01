@@ -81,7 +81,7 @@ export function ChatBot() {
             {/* Chat button */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-primary-500 to-accent-500 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform z-50"
+                className="fixed bottom-6 right-6 md:bottom-6 w-14 h-14 bg-gradient-to-r from-primary-500 to-accent-500 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform z-50"
                 aria-label="Open chat"
             >
                 {isOpen ? (
