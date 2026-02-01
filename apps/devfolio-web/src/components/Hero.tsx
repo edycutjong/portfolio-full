@@ -19,7 +19,14 @@ export function Hero() {
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
                         <span className="relative inline-flex rounded-full h-3 w-3 bg-primary-500 pulse-glow"></span>
                     </span>
-                    <span className="text-sm text-gray-300">Available for remote opportunities</span>
+                    <span className="text-sm text-gray-300">
+                        <TypeWriter
+                            texts={['Available for remote opportunities']}
+                            typingSpeed={50}
+                            deletingSpeed={0}
+                            pauseDuration={999999}
+                        />
+                    </span>
                 </div>
 
                 {/* Main heading with typewriter */}

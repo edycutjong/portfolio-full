@@ -55,7 +55,7 @@ export function Skills() {
                                 {skill.items.map((item) => (
                                     <span
                                         key={item}
-                                        className="px-3 py-1.5 bg-gradient-to-r from-primary-500/10 to-accent-500/10 rounded-full text-sm text-gray-200 border border-white/5 hover:border-white/20 transition-colors"
+                                        className="skill-badge px-3 py-1.5 rounded-full text-sm transition-colors"
                                     >
                                         {item}
                                     </span>

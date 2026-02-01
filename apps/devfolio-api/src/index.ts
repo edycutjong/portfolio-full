@@ -2,7 +2,6 @@ import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { logger } from 'hono/logger'
 import { prettyJSON } from 'hono/pretty-json'
-import { apiReference } from '@scalar/hono-api-reference'
 import { projectsRouter } from './routes/projects'
 import { profileRouter } from './routes/profile'
 import { contactRouter } from './routes/contact'
@@ -30,6 +29,7 @@ app.get('/', (c) => {
         version: '0.0.1',
         status: 'healthy',
         timestamp: new Date().toISOString(),
+        docs: '/openapi.json',
     })
 })
 
@@ -38,15 +38,14 @@ app.get('/openapi.json', (c) => {
     return c.json(openApiSpec)
 })
 
-// API Documentation (Scalar)
-app.get(
-    '/docs',
-    apiReference({
-        theme: 'kepler',
-        url: '/openapi.json',
-        pageTitle: 'DevFolio API Documentation',
+// Docs redirect - point to OpenAPI spec (Scalar removed due to ESM incompatibility with Vercel)
+app.get('/docs', (c) => {
+    return c.json({
+        message: 'API Documentation',
+        openapi_spec: '/openapi.json',
+        note: 'Import the OpenAPI spec URL into your preferred API client (Postman, Insomnia, etc.)',
     })
-)
+})
 
 // Routes
 app.route('/api/projects', projectsRouter)

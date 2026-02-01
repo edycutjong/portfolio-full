@@ -57,7 +57,28 @@
     radial-gradient(circle at 75% 75%, rgba(147, 51, 234, 0.08) 0%, transparent 50%);
 }
 
+/* Navigation links */
+.nav-link {
+  color: #d1d5db;
+}
+
+.nav-link:hover {
+  color: #ffffff;
+}
+
+.light .nav-link {
+  color: #4b5563;
+}
+
+.light .nav-link:hover {
+  color: #111827;
+}
+
 /* Light theme text colors */
+.light .text-gray-200 {
+  color: #3f3f46;
+}
+
 .light .text-gray-300 {
   color: #525252;
 }
@@ -142,6 +163,29 @@ body {
   border-color: rgba(255, 255, 255, 0.2);
   transform: translateY(-4px);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Skill badges */
+.skill-badge {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(168, 85, 247, 0.15));
+  color: #e5e7eb;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.skill-badge:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.25), rgba(168, 85, 247, 0.25));
+}
+
+.light .skill-badge {
+  background: linear-gradient(135deg, rgba(22, 163, 74, 0.12), rgba(147, 51, 234, 0.12));
+  color: #374151;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.light .skill-badge:hover {
+  border-color: rgba(0, 0, 0, 0.2);
+  background: linear-gradient(135deg, rgba(22, 163, 74, 0.2), rgba(147, 51, 234, 0.2));
 }
 
 /* Gradient text */

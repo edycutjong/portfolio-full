@@ -89,8 +89,8 @@ export function Contact() {
                                 </div>
                                 <div>
                                     <div className="text-gray-400 text-sm">Email</div>
-                                    <a href="mailto:hello@edycu.dev" className="hover:text-primary-400 transition-colors">
-                                        hello@edycu.dev
+                                    <a href="mailto:edy.cu@live.com" className="hover:text-primary-400 transition-colors">
+                                        edy.cu@live.com
                                     </a>
                                 </div>
                             </div>
@@ -234,11 +234,28 @@ export function Contact() {
                         {status === 'error' && (
                             <div className="mt-4 p-4 bg-red-500/20 border border-red-500/30 rounded-lg animate-fade-in">
                                 <p className="text-center text-red-400">
-                                    Something went wrong. Please email me directly at hello@edycu.dev
+                                    Something went wrong. Please email me directly at edy.cu@live.com
                                 </p>
                             </div>
                         )}
                     </form>
+                </div>
+
+                {/* Scroll indicator - matches homepage visual */}
+                <div className="flex justify-center mt-12">
+                    <svg
+                        className="w-6 h-6 text-gray-400 animate-bounce"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                        />
+                    </svg>
                 </div>
             </div>
         </section>

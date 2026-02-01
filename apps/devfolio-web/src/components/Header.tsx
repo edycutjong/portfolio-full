@@ -38,7 +38,7 @@ export function Header() {
                         <li key={link.href}>
                             <a
                                 href={link.href}
-                                className="text-gray-300 hover:text-white transition-colors font-medium"
+                                className="nav-link transition-colors font-medium"
                             >
                                 {link.label}
                             </a>
@@ -59,7 +59,7 @@ export function Header() {
 
                 {/* Mobile Menu Button */}
                 <button
-                    className="md:hidden text-white p-2"
+                    className="md:hidden nav-link p-2"
                     onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                     aria-label="Toggle menu"
                 >
@@ -95,7 +95,7 @@ export function Header() {
                                 <li key={link.href}>
                                     <a
                                         href={link.href}
-                                        className="block text-gray-300 hover:text-white transition-colors font-medium"
+                                        className="block nav-link transition-colors font-medium"
                                         onClick={() => setMobileMenuOpen(false)}
                                     >
                                         {link.label}
