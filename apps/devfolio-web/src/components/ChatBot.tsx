@@ -158,7 +158,7 @@ export function ChatBot() {
                         {messages.map((msg, i) => (
                             <Flex
                                 key={i}
-                                justifyContent={msg.role === "user" ? "flex-end" : "flex-start"}
+                                style={{ justifyContent: msg.role === "user" ? "flex-end" : "flex-start" }}
                             >
                                 <Flex
                                     paddingX="m"
@@ -177,7 +177,7 @@ export function ChatBot() {
                             </Flex>
                         ))}
                         {isLoading && (
-                            <Flex justifyContent="flex-start">
+                            <Flex style={{ justifyContent: "flex-start" }}>
                                 <Flex paddingX="m" paddingY="s" radius="l" background="neutral-weak">
                                     <Text variant="body-default-s" onBackground="neutral-weak">
                                         Thinking...
@@ -211,7 +211,7 @@ export function ChatBot() {
                             paddingY="s"
                             gap="8"
                             borderTop="neutral-alpha-weak"
-                            alignItems="center"
+                            style={{ alignItems: "center" }}
                         >
                             <Input
                                 id="chat-input"
