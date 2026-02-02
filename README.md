@@ -10,7 +10,7 @@
 
 **A production-ready monorepo showcasing 5 full-stack projects across 4 tech stacks**
 
-[**🌐 Live Demo**](https://edycu.dev) · [**📄 API Docs**](https://documind-api.edycu.dev/docs) · [**🔗 All Projects**](#-live-deployments)
+[**🌐 Live Demo**](https://edycu.dev) · [**📄 API Docs**](https://documind-api.edycu.dev/docs) · [**📊 Status**](https://stats.uptimerobot.com/0YsnBIcNIB) · [**🔗 All Projects**](#-live-deployments)
 
 </div>
 
