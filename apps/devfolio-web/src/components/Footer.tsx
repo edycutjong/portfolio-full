@@ -43,6 +43,13 @@ export const Footer = () => {
                 variant="ghost"
               />
             ))}
+          <IconButton
+            href="https://stats.uptimerobot.com/0YsnBIcNIB"
+            icon="check"
+            tooltip="Status"
+            size="s"
+            variant="ghost"
+          />
         </Row>
       </Row>
       <Row height="80" hide s={{ hide: false }} />
