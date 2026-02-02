@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import {
   BorderStyle,
   ChartMode,
@@ -21,6 +22,25 @@ import { style, dataStyle } from "../resources";
 import { iconLibrary } from "../resources/icons";
 
 export function Providers({ children }: { children: React.ReactNode }) {
+  // Suppress React key warnings from Once UI library internals (temporary workaround)
+  useEffect(() => {
+    if (process.env.NODE_ENV === "development") {
+      const originalError = console.error;
+      console.error = (...args) => {
+        if (
+          typeof args[0] === "string" &&
+          args[0].includes("Each child in a list should have a unique")
+        ) {
+          return; // Suppress this specific warning
+        }
+        originalError.apply(console, args);
+      };
+      return () => {
+        console.error = originalError;
+      };
+    }
+  }, []);
+
   return (
     <LayoutProvider>
       <ThemeProvider

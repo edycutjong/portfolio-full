@@ -1,0 +1,66 @@
+/* Mindflow Custom Styles */
+
+:root {
+  --page-padding-x: 24px;
+  --page-padding-y: 32px;
+}
+
+/* Journal Entry Card Styles */
+.journal-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.journal-card:hover {
+  transform: translateY(-2px);
+}
+
+/* Mood Selector Styles */
+.mood-button {
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.mood-button:hover {
+  transform: scale(1.15);
+}
+
+.mood-button.selected {
+  transform: scale(1.2);
+}
+
+/* Calendar Heatmap */
+.calendar-day {
+  transition: opacity 0.2s ease;
+}
+
+.calendar-day:hover {
+  opacity: 0.8;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease forwards;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
